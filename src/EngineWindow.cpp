@@ -1,5 +1,9 @@
 #include "EngineWindow.h"
 
+
+int engine::window::windowWidth = 800;
+int engine::window::windowHeight = 800;
+
 std::wstring engine::window::GetErrorDescription(HRESULT hr)
 {
 	wchar_t* descriptionWinalloc = nullptr;

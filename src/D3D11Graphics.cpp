@@ -1,7 +1,7 @@
 #include "D3D11Graphics.h"
 #include "GraphicsError.h"
 #include "Macros.h"
-
+#include "EngineWindow.h"
 
 #define STB_IMAGE_IMPLEMENTATION    
 #include "3rdparty\stb_image.h"
@@ -65,8 +65,8 @@ D3D11Graphics::D3D11Graphics(HWND hWnd)
 
 	// Setup the viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = 1600;
-	vp.Height = 900;
+	vp.Width = engine::window::windowWidth;
+	vp.Height = engine::window::windowHeight;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
