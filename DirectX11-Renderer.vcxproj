@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\aalpe\Desktop\DirectxRenderer\DirectX11-Renderer\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\aalpe\Desktop\DirectxRenderer\DirectX11-Renderer\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\aalpe\Desktop\DirectxRenderer\DirectX11-Renderer\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\aalpe\Desktop\DirectxRenderer\DirectX11-Renderer\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -148,6 +148,7 @@
     <ClCompile Include="src\GraphicsError.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\3rdparty\stb_image.h" />
     <ClInclude Include="src\D3D11Graphics.h" />
     <ClInclude Include="src\DxgiInfoManager.h" />
     <ClInclude Include="src\EngineWindow.h" />

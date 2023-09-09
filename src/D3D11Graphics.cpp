@@ -2,6 +2,11 @@
 #include "GraphicsError.h"
 #include "Macros.h"
 
+
+#define STB_IMAGE_IMPLEMENTATION    
+#include "3rdparty\stb_image.h"
+
+
 #include <iostream>
 #include <d3dcompiler.h>
 
@@ -76,26 +81,19 @@ void D3D11Graphics::Draw()
 {
 	CheckerToken chk = {};
 
-	//vertex shader
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
-	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
-	D3DReadFileToBlob(L"x64\\Debug\\VertexShaderTest.cso", &pBlob) >> chk;
-	pd3dDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pVertexShader) >> chk;
 
-	CHECK_INFOQUEUE( pImmediateContext->VSSetShader(pVertexShader.Get(), NULL, 0u) );
-
-
-	//vertexbuffer
+	//vertex buffer-----------------------------------------------------------------------------------------------------------------------------------------
 	const float vertices[] =
 	{
-		0.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
+		0.5f, 0.5f, 0.0f,	1.0f, 1.0f,
+		0.5f, -0.5f, 0.0f,	1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,	0.0f, 0.0f,
+		-0.5f, 0.5f, 0.0f,	0.0f, 1.0f,
 	};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
 
-	unsigned int stride = sizeof(float) * 3;
+	unsigned int stride = sizeof(float) * 5;
 	unsigned int offset = 0u;
 
 	D3D11_BUFFER_DESC vbd = {};
@@ -113,17 +111,54 @@ void D3D11Graphics::Draw()
 	
 	CHECK_INFOQUEUE( pImmediateContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset) );
 
-	//input layout
+
+	//index buffer-----------------------------------------------------------------------------------------------------------------------------------------
+	unsigned int indices[] =
+	{
+		0, 1, 2,
+		0, 2, 3
+	};
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
+
+	D3D11_BUFFER_DESC ibd = {};
+	ibd.ByteWidth = sizeof(indices);
+	ibd.Usage = D3D11_USAGE_DEFAULT;
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0u;
+	ibd.MiscFlags = 0u;
+	ibd.StructureByteStride = sizeof(unsigned int) * 3;
+
+	D3D11_SUBRESOURCE_DATA isd = {};
+	isd.pSysMem = indices;
+
+	pd3dDevice->CreateBuffer(&ibd, &isd, &pIndexBuffer) >> chk;
+
+	CHECK_INFOQUEUE( pImmediateContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u) );
+
+
+	//vertex shader-----------------------------------------------------------------------------------------------------------------------------------------
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
+	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+	D3DReadFileToBlob(L"x64\\Debug\\VertexShaderTest.cso", &pBlob) >> chk;
+	pd3dDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pVertexShader) >> chk;
+
+	CHECK_INFOQUEUE(pImmediateContext->VSSetShader(pVertexShader.Get(), NULL, 0u));
+
+
+	//input layout-----------------------------------------------------------------------------------------------------------------------------------------
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> ied;
 	ied.push_back({"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u});
+	ied.push_back({"TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u });
 
 	pd3dDevice->CreateInputLayout(ied.data(), (UINT)std::size(ied), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pInputLayout) >> chk;
 
 	CHECK_INFOQUEUE( pImmediateContext->IASetInputLayout(pInputLayout.Get()) );
 
-	//pixel shader
+
+	//pixel shader-----------------------------------------------------------------------------------------------------------------------------------------
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
 	D3DReadFileToBlob(L"x64\\Debug\\PixelShaderTest.cso", &pBlob) >> chk;
 	pd3dDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pPixelShader) >> chk;
@@ -131,14 +166,76 @@ void D3D11Graphics::Draw()
 	CHECK_INFOQUEUE( pImmediateContext->PSSetShader(pPixelShader.Get(), NULL, 0u));
 
 
-	//Draw Frame
+	//texture-----------------------------------------------------------------------------------------------------------------------------------------
+	int width;
+	int height;
+	int nrChannels;
+	const char* fileName = "Resources\\Textures\\FatihChan.png";
+
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* data = stbi_load(fileName, &width, &height, &nrChannels, STBI_rgb_alpha);
+	
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture2D;
+
+	D3D11_TEXTURE2D_DESC td = {};
+	td.Width = width;
+	td.Height = height;
+	td.MipLevels = 0;
+	td.ArraySize = 1;
+	td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	td.SampleDesc.Count = 1;
+	td.SampleDesc.Quality = 0;
+	td.Usage = D3D11_USAGE_DEFAULT;
+	td.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	td.CPUAccessFlags = 0u;
+	td.MiscFlags = D3D10_RESOURCE_MISC_GENERATE_MIPS;
+
+	pd3dDevice->CreateTexture2D(&td, nullptr, &pTexture2D) >> chk;
+
+	CHECK_INFOQUEUE( pImmediateContext->UpdateSubresource(pTexture2D.Get(), 0u, nullptr, data, sizeof(int) * width, 0u) );
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pTextureView;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvd = {};
+	srvd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvd.Texture2D.MostDetailedMip = 0;
+	srvd.Texture2D.MipLevels = -1;
+
+	pd3dDevice->CreateShaderResourceView(pTexture2D.Get(), &srvd, &pTextureView) >> chk;
+	CHECK_INFOQUEUE( pImmediateContext->GenerateMips(pTextureView.Get()) );
+
+	stbi_image_free(data);
+
+	CHECK_INFOQUEUE( pImmediateContext->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf()) );
+
+
+	//Sampler State-----------------------------------------------------------------------------------------------------------------------------------------
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> pSamplerState;
+
+	D3D11_SAMPLER_DESC sampd = {};
+	sampd.Filter = D3D11_FILTER_ANISOTROPIC;
+	sampd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampd.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+	sampd.MipLODBias = 0.0f;
+	sampd.MinLOD = 0.0f;
+	sampd.MaxLOD = D3D11_FLOAT32_MAX;
+
+	pd3dDevice->CreateSamplerState(&sampd, &pSamplerState) >> chk;
+
+	CHECK_INFOQUEUE( pImmediateContext->PSSetSamplers(0u, 1u, pSamplerState.GetAddressOf()) );
+
+
+	//Draw Frame-----------------------------------------------------------------------------------------------------------------------------------------
 
 	//clear back buffer
 	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
 	CHECK_INFOQUEUE( pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color) );
 
 	//draw call
-	CHECK_INFOQUEUE(pImmediateContext->Draw(3u, 0u));
+	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(std::size(indices), 0u, 0u));
 
 	//swap buffer
 	pSwapChain->Present(1u, 0) >> chk;

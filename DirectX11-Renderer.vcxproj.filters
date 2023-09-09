@@ -28,6 +28,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{36905a2a-f1a8-41de-b71f-e3d65bdba66f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\3rd Party">
+      <UniqueIdentifier>{e42344a5-0f96-4e05-b293-9fddb8eccadd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -59,8 +62,11 @@
     <ClInclude Include="src\EngineWindow.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="src\3rdparty\stb_image.h">
+      <Filter>Header Files\3rd Party</Filter>
+    </ClInclude>
     <ClInclude Include="src\Macros.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
