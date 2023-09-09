@@ -10,8 +10,10 @@ public:
 
 	void Draw();
 private:
-	DxgiInfoManager infoManager;
-	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;
+	Microsoft::WRL::ComPtr<ID3D11Device> pd3dDevice;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pImmediateContext;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTargetView;
+private:
+	DxgiInfoManager infoManager;
 };

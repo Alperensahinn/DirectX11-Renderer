@@ -2,7 +2,6 @@
 #include "EngineWindow.h"
 #include <source_location>
 
-
 struct CheckerToken {};
 
 struct  HrGrabber
@@ -13,3 +12,4 @@ struct  HrGrabber
 };
 
 void operator>>(HrGrabber, CheckerToken);
+

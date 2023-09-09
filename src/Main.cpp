@@ -6,8 +6,8 @@
 
 #include <iostream>
 
-int windowWith = 1280;
-int windowHeight = 720;
+int windowWith = 1680;
+int windowHeight = 900;
 
 int main()
 {

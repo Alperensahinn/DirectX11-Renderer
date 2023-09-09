@@ -51,10 +51,16 @@ std::vector<std::string> DxgiInfoManager::GetMessages() const
 
 void DxgiInfoManager::PrintMessageQueue(std::vector<std::string>& messages) const
 {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
+
 	std::cout << "[ERROR] InfoQueue: " << std::endl;
 
 	for(int i = 0; i < messages.size(); i++)
 	{
 		std::cout << messages.at(i) << std::endl;
 	}
+
+	SetConsoleTextAttribute(hConsole, 15);
+	CloseHandle(hConsole);
 }

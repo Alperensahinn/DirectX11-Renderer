@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Utilities">
       <UniqueIdentifier>{69839f5a-f4df-491e-8cef-51b514639ac8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{36905a2a-f1a8-41de-b71f-e3d65bdba66f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -59,5 +62,13 @@
     <ClInclude Include="src\Macros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Shaders\VertexShaderTest.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Shaders\PixelShaderTest.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
