@@ -144,16 +144,18 @@
     <ClCompile Include="src\DxgiInfoManager.cpp" />
     <ClCompile Include="src\EngineWindow.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\D3D11Graphics.cpp" />
+    <ClCompile Include="src\D3D11Renderer.cpp" />
     <ClCompile Include="src\GraphicsError.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3rdparty\stb_image.h" />
-    <ClInclude Include="src\D3D11Graphics.h" />
+    <ClInclude Include="src\D3D11Renderer.h" />
+    <ClInclude Include="src\D3D11VertexBuffer.h" />
     <ClInclude Include="src\DxgiInfoManager.h" />
     <ClInclude Include="src\EngineWindow.h" />
     <ClInclude Include="src\GraphicsError.h" />
     <ClInclude Include="src\Macros.h" />
+    <ClInclude Include="src\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Shaders\PixelShaderTest.hlsl">

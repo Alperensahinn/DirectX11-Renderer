@@ -1,4 +1,4 @@
-#include "D3D11Graphics.h"
+#include "D3D11Renderer.h"
 #include "GraphicsError.h"
 #include "Macros.h"
 #include "EngineWindow.h"
@@ -9,13 +9,17 @@
 
 #include <iostream>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
+
+#include "Mesh.h"
+#include "D3D11VertexBuffer.h"
 
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
 
-D3D11Graphics::D3D11Graphics(HWND hWnd)
+D3D11Renderer::D3D11Renderer(HWND hWnd)
 {
 	CheckerToken chk = {};
 
@@ -77,39 +81,30 @@ D3D11Graphics::D3D11Graphics(HWND hWnd)
 	CHECK_INFOQUEUE( pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) );
 }
 
-void D3D11Graphics::Draw()
+ID3D11Device* D3D11Renderer::GetDevice()
+{
+	return pd3dDevice.Get();
+}
+
+ID3D11DeviceContext* D3D11Renderer::GetImmediateContext()
+{
+	return pImmediateContext.Get();
+}
+
+void D3D11Renderer::Draw()
 {
 	CheckerToken chk = {};
 
 
 	//vertex buffer-----------------------------------------------------------------------------------------------------------------------------------------
-	const float vertices[] =
-	{
-		0.5f, 0.5f, 0.0f,	1.0f, 1.0f,
-		0.5f, -0.5f, 0.0f,	1.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f,	0.0f, 0.0f,
-		-0.5f, 0.5f, 0.0f,	0.0f, 1.0f,
-	};
+	std::vector<Vertex> vertices;
+	vertices.push_back({ 0.5f, 0.5f, 0.0f,	1.0f, 1.0f });
+	vertices.push_back({ 0.5f, -0.5f, 0.0f,	1.0f, 0.0f });
+	vertices.push_back({ -0.5f, -0.5f, 0.0f,	0.0f, 0.0f });
+	vertices.push_back({ -0.5f, 0.5f, 0.0f,	0.0f, 1.0f });
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
-
-	unsigned int stride = sizeof(float) * 5;
-	unsigned int offset = 0u;
-
-	D3D11_BUFFER_DESC vbd = {};
-	vbd.ByteWidth = sizeof(vertices);
-	vbd.Usage = D3D11_USAGE_DEFAULT;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0u;
-	vbd.MiscFlags = 0u;
-	vbd.StructureByteStride = stride;
-
-	D3D11_SUBRESOURCE_DATA vsd = {};
-	vsd.pSysMem = vertices;
-
-	pd3dDevice->CreateBuffer(&vbd, &vsd, &pVertexBuffer) >> chk;
-	
-	CHECK_INFOQUEUE( pImmediateContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset) );
+	std::unique_ptr<D3D11VertexBuffer<Vertex>> vertexBuffer = std::make_unique<D3D11VertexBuffer<Vertex>>(*this, vertices);
+	vertexBuffer.get()->Bind(*this);
 
 
 	//index buffer-----------------------------------------------------------------------------------------------------------------------------------------
@@ -226,6 +221,45 @@ void D3D11Graphics::Draw()
 	pd3dDevice->CreateSamplerState(&sampd, &pSamplerState) >> chk;
 
 	CHECK_INFOQUEUE( pImmediateContext->PSSetSamplers(0u, 1u, pSamplerState.GetAddressOf()) );
+
+
+	//Math test
+	DirectX::XMMATRIX transform = DirectX::XMMatrixIdentity();
+	transform = DirectX::XMMatrixMultiply(transform, DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(90.0f)));
+
+
+	//constant buffer
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;
+
+	struct VSCBUFF
+	{
+		DirectX::XMMATRIX transform;
+	}vcbuffData;
+	
+	vcbuffData.transform = transform;
+
+	D3D11_BUFFER_DESC cbDesc = {};
+	cbDesc.ByteWidth = (sizeof(VSCBUFF));
+	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbDesc.MiscFlags = 0;
+	cbDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA cbdata;
+	cbdata.pSysMem = &vcbuffData;
+	cbdata.SysMemPitch = 0;
+	cbdata.SysMemSlicePitch = 0;
+
+	pd3dDevice->CreateBuffer(&cbDesc, &cbdata, &pConstantBuffer) >> chk;
+
+	CHECK_INFOQUEUE( pImmediateContext->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf()) );
+
+	D3D11_MAPPED_SUBRESOURCE ms = {};
+
+	pImmediateContext->Map(pConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &ms) >> chk;
+	memcpy(ms.pData, &vcbuffData, sizeof(vcbuffData));
+	CHECK_INFOQUEUE( pImmediateContext->Unmap(pConstantBuffer.Get(), 0u) );
 
 
 	//Draw Frame-----------------------------------------------------------------------------------------------------------------------------------------

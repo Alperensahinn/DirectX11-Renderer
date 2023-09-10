@@ -36,7 +36,7 @@
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\D3D11Graphics.cpp">
+    <ClCompile Include="src\D3D11Renderer.cpp">
       <Filter>Source Files\D3D11</Filter>
     </ClCompile>
     <ClCompile Include="src\DxgiInfoManager.cpp">
@@ -50,7 +50,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\D3D11Graphics.h">
+    <ClInclude Include="src\D3D11Renderer.h">
       <Filter>Header Files\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="src\DxgiInfoManager.h">
@@ -67,6 +67,12 @@
     </ClInclude>
     <ClInclude Include="src\Macros.h">
       <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\D3D11VertexBuffer.h">
+      <Filter>Header Files\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

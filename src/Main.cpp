@@ -3,7 +3,7 @@
 #include "GLFW\glfw3native.h"
 
 
-#include "D3D11Graphics.h"
+#include "D3D11Renderer.h"
 #include "EngineWindow.h"
 
 #include <iostream>
@@ -26,7 +26,7 @@ int main()
 
 	HWND hWnd = glfwGetWin32Window(window);
 
-	std::unique_ptr<D3D11Graphics> pGfx = std::make_unique<D3D11Graphics>(hWnd);
+	std::unique_ptr<D3D11Renderer> pGfx = std::make_unique<D3D11Renderer>(hWnd);
 
 	while (!glfwWindowShouldClose(window))
 	{

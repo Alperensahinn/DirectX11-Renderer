@@ -3,11 +3,13 @@
 #include <wrl.h>
 #include "DxgiInfoManager.h"
 
-class D3D11Graphics
+class D3D11Renderer
 {
 public:
-	D3D11Graphics(HWND hWnd);
+	D3D11Renderer(HWND hWnd);
 
+	ID3D11Device* GetDevice();
+	ID3D11DeviceContext* GetImmediateContext();
 	void Draw();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;
