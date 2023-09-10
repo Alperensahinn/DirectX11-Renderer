@@ -3,10 +3,10 @@
 #include <wrl.h>
 #include "DxgiInfoManager.h"
 
-class D3D11Renderer
+class Direct3D11Renderer
 {
 public:
-	D3D11Renderer(HWND hWnd);
+	Direct3D11Renderer(HWND hWnd);
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetImmediateContext();

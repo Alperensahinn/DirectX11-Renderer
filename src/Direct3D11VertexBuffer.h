@@ -1,16 +1,16 @@
 #pragma once
 
-#include "D3D11Renderer.h"
+#include "Direct3D11Renderer.h"
 #include "GraphicsError.h"
 
 #include <wrl.h>
 #include <vector>
 
 template<typename T>
-class D3D11VertexBuffer
+class Direct3D11VertexBuffer
 {
 public:
-	D3D11VertexBuffer(D3D11Renderer& pd3dRenderer, std::vector<T> vertices) : stride(sizeof(T))
+	Direct3D11VertexBuffer(Direct3D11Renderer& pd3dRenderer, std::vector<T> vertices) : stride(sizeof(T))
 	{
 		CheckerToken chk = {};
 
@@ -28,7 +28,7 @@ public:
 		pd3dRenderer.GetDevice()->CreateBuffer(&vbdesc, &vsdata, &pVertexBuffer) >> chk;
 	}
 
-	void Bind(D3D11Renderer& pd3dRenderer)
+	void Bind(Direct3D11Renderer& pd3dRenderer)
 	{
 		unsigned int offset = 0u;
 		pd3dRenderer.GetImmediateContext()->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);

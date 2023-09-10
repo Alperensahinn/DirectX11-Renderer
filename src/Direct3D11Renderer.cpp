@@ -1,4 +1,4 @@
-#include "D3D11Renderer.h"
+#include "Direct3D11Renderer.h"
 #include "GraphicsError.h"
 #include "Macros.h"
 #include "EngineWindow.h"
@@ -12,14 +12,16 @@
 #include <DirectXMath.h>
 
 #include "Mesh.h"
-#include "D3D11VertexBuffer.h"
+#include "Direct3D11VertexBuffer.h"
+#include "Direct3D11VertexShader.h"
+#include "Direct3D11PixelShader.h"
 
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
 
-D3D11Renderer::D3D11Renderer(HWND hWnd)
+Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 {
 	CheckerToken chk = {};
 
@@ -81,17 +83,17 @@ D3D11Renderer::D3D11Renderer(HWND hWnd)
 	CHECK_INFOQUEUE( pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) );
 }
 
-ID3D11Device* D3D11Renderer::GetDevice()
+ID3D11Device* Direct3D11Renderer::GetDevice()
 {
 	return pd3dDevice.Get();
 }
 
-ID3D11DeviceContext* D3D11Renderer::GetImmediateContext()
+ID3D11DeviceContext* Direct3D11Renderer::GetImmediateContext()
 {
 	return pImmediateContext.Get();
 }
 
-void D3D11Renderer::Draw()
+void Direct3D11Renderer::Draw()
 {
 	CheckerToken chk = {};
 
@@ -103,7 +105,7 @@ void D3D11Renderer::Draw()
 	vertices.push_back({ -0.5f, -0.5f, 0.0f,	0.0f, 0.0f });
 	vertices.push_back({ -0.5f, 0.5f, 0.0f,	0.0f, 1.0f });
 
-	std::unique_ptr<D3D11VertexBuffer<Vertex>> vertexBuffer = std::make_unique<D3D11VertexBuffer<Vertex>>(*this, vertices);
+	std::unique_ptr<Direct3D11VertexBuffer<Vertex>> vertexBuffer = std::make_unique<Direct3D11VertexBuffer<Vertex>>(*this, vertices);
 	vertexBuffer.get()->Bind(*this);
 
 
@@ -133,12 +135,9 @@ void D3D11Renderer::Draw()
 
 
 	//vertex shader-----------------------------------------------------------------------------------------------------------------------------------------
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
-	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
-	D3DReadFileToBlob(L"x64\\Debug\\VertexShaderTest.cso", &pBlob) >> chk;
-	pd3dDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pVertexShader) >> chk;
 
-	CHECK_INFOQUEUE(pImmediateContext->VSSetShader(pVertexShader.Get(), NULL, 0u));
+	std::unique_ptr<Direct3D11VertexShader> vertexShader = std::make_unique<Direct3D11VertexShader>(*this, "x64\\Debug\\VertexShaderTest.cso");
+	vertexShader.get()->Bind(*this);
 
 
 	//input layout-----------------------------------------------------------------------------------------------------------------------------------------
@@ -148,18 +147,15 @@ void D3D11Renderer::Draw()
 	ied.push_back({"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u});
 	ied.push_back({"TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u });
 
-	pd3dDevice->CreateInputLayout(ied.data(), (UINT)std::size(ied), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pInputLayout) >> chk;
+	pd3dDevice->CreateInputLayout(ied.data(), (UINT)std::size(ied), vertexShader.get()->GetBlob()->GetBufferPointer(), vertexShader.get()->GetBlob()->GetBufferSize(), &pInputLayout) >> chk;
 
 	CHECK_INFOQUEUE( pImmediateContext->IASetInputLayout(pInputLayout.Get()) );
 
 
 	//pixel shader-----------------------------------------------------------------------------------------------------------------------------------------
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
-	D3DReadFileToBlob(L"x64\\Debug\\PixelShaderTest.cso", &pBlob) >> chk;
-	pd3dDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pPixelShader) >> chk;
-
-	CHECK_INFOQUEUE( pImmediateContext->PSSetShader(pPixelShader.Get(), NULL, 0u));
-
+	std::unique_ptr<Direct3D11PixelShader> pixelShader = std::make_unique<Direct3D11PixelShader>(*this, "x64\\Debug\\PixelShaderTest.cso");
+	pixelShader.get()->Bind(*this);
+	
 
 	//texture-----------------------------------------------------------------------------------------------------------------------------------------
 	int width;
