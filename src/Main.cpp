@@ -26,11 +26,11 @@ int main()
 
 	HWND hWnd = glfwGetWin32Window(window);
 
-	std::unique_ptr<Direct3D11Renderer> pGfx = std::make_unique<Direct3D11Renderer>(hWnd);
+	std::unique_ptr<Direct3D11Renderer> pd3dRenderer = std::make_unique<Direct3D11Renderer>(hWnd);
 
 	while (!glfwWindowShouldClose(window))
 	{
-		pGfx->Draw();
+		pd3dRenderer->Draw();
 		glfwPollEvents();
 	}
 

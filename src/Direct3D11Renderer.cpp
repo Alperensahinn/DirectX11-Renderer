@@ -13,8 +13,14 @@
 
 #include "Mesh.h"
 #include "Direct3D11VertexBuffer.h"
+#include "Direct3D11IndexBuffer.h"
 #include "Direct3D11VertexShader.h"
 #include "Direct3D11PixelShader.h"
+#include "Direct3D11SamplerState.h"
+#include "Direct3D11ConstantBuffer.h"
+#include "Direct3D11InputLayout.h"
+#include "Direct3D11Texture2D.h"
+
 
 
 #pragma comment(lib, "d3d11.lib")
@@ -110,46 +116,32 @@ void Direct3D11Renderer::Draw()
 
 
 	//index buffer-----------------------------------------------------------------------------------------------------------------------------------------
-	unsigned int indices[] =
-	{
-		0, 1, 2,
-		0, 2, 3
-	};
+	std::vector<unsigned int> indices;
+	indices.push_back(0);
+	indices.push_back(1);
+	indices.push_back(2);
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
+	indices.push_back(0);
+	indices.push_back(2);
+	indices.push_back(3);
 
-	D3D11_BUFFER_DESC ibd = {};
-	ibd.ByteWidth = sizeof(indices);
-	ibd.Usage = D3D11_USAGE_DEFAULT;
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.CPUAccessFlags = 0u;
-	ibd.MiscFlags = 0u;
-	ibd.StructureByteStride = sizeof(unsigned int) * 3;
 
-	D3D11_SUBRESOURCE_DATA isd = {};
-	isd.pSysMem = indices;
-
-	pd3dDevice->CreateBuffer(&ibd, &isd, &pIndexBuffer) >> chk;
-
-	CHECK_INFOQUEUE( pImmediateContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u) );
+	std::unique_ptr<Direct3D11IndexBuffer> indexBuffer = std::make_unique<Direct3D11IndexBuffer>(*this, indices);
+	indexBuffer.get()->Bind(*this);
 
 
 	//vertex shader-----------------------------------------------------------------------------------------------------------------------------------------
-
 	std::unique_ptr<Direct3D11VertexShader> vertexShader = std::make_unique<Direct3D11VertexShader>(*this, "x64\\Debug\\VertexShaderTest.cso");
 	vertexShader.get()->Bind(*this);
 
 
 	//input layout-----------------------------------------------------------------------------------------------------------------------------------------
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
-
 	std::vector<D3D11_INPUT_ELEMENT_DESC> ied;
-	ied.push_back({"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u});
-	ied.push_back({"TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u });
+	ied.push_back({ "Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u });
+	ied.push_back({ "TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u });
 
-	pd3dDevice->CreateInputLayout(ied.data(), (UINT)std::size(ied), vertexShader.get()->GetBlob()->GetBufferPointer(), vertexShader.get()->GetBlob()->GetBufferSize(), &pInputLayout) >> chk;
-
-	CHECK_INFOQUEUE( pImmediateContext->IASetInputLayout(pInputLayout.Get()) );
+	std::unique_ptr<Direct3D11InputLayout> inputLayout = std::make_unique<Direct3D11InputLayout>(*this, ied, vertexShader.get()->GetBlob());
+	inputLayout.get()->Bind(*this);
 
 
 	//pixel shader-----------------------------------------------------------------------------------------------------------------------------------------
@@ -158,65 +150,13 @@ void Direct3D11Renderer::Draw()
 	
 
 	//texture-----------------------------------------------------------------------------------------------------------------------------------------
-	int width;
-	int height;
-	int nrChannels;
-	const char* fileName = "Resources\\Textures\\FatihChan.png";
-
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load(fileName, &width, &height, &nrChannels, STBI_rgb_alpha);
-	
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture2D;
-
-	D3D11_TEXTURE2D_DESC td = {};
-	td.Width = width;
-	td.Height = height;
-	td.MipLevels = 0;
-	td.ArraySize = 1;
-	td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	td.SampleDesc.Count = 1;
-	td.SampleDesc.Quality = 0;
-	td.Usage = D3D11_USAGE_DEFAULT;
-	td.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	td.CPUAccessFlags = 0u;
-	td.MiscFlags = D3D10_RESOURCE_MISC_GENERATE_MIPS;
-
-	pd3dDevice->CreateTexture2D(&td, nullptr, &pTexture2D) >> chk;
-
-	CHECK_INFOQUEUE( pImmediateContext->UpdateSubresource(pTexture2D.Get(), 0u, nullptr, data, sizeof(int) * width, 0u) );
-
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pTextureView;
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvd = {};
-	srvd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvd.Texture2D.MostDetailedMip = 0;
-	srvd.Texture2D.MipLevels = -1;
-
-	pd3dDevice->CreateShaderResourceView(pTexture2D.Get(), &srvd, &pTextureView) >> chk;
-	CHECK_INFOQUEUE( pImmediateContext->GenerateMips(pTextureView.Get()) );
-
-	stbi_image_free(data);
-
-	CHECK_INFOQUEUE( pImmediateContext->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf()) );
+	std::unique_ptr<Direct3D11Texture2D> texture2D = std::make_unique<Direct3D11Texture2D>(*this, "Resources\\Textures\\FatihChan.png", 0u);
+	texture2D.get()->Bind(*this);
 
 
 	//Sampler State-----------------------------------------------------------------------------------------------------------------------------------------
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> pSamplerState;
-
-	D3D11_SAMPLER_DESC sampd = {};
-	sampd.Filter = D3D11_FILTER_ANISOTROPIC;
-	sampd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampd.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
-	sampd.MipLODBias = 0.0f;
-	sampd.MinLOD = 0.0f;
-	sampd.MaxLOD = D3D11_FLOAT32_MAX;
-
-	pd3dDevice->CreateSamplerState(&sampd, &pSamplerState) >> chk;
-
-	CHECK_INFOQUEUE( pImmediateContext->PSSetSamplers(0u, 1u, pSamplerState.GetAddressOf()) );
+	std::unique_ptr<Direct3D11SamplerState> samplerState = std::make_unique<Direct3D11SamplerState>(*this);
+	samplerState.get()->Bind(*this);
 
 
 	//Math test
@@ -225,37 +165,17 @@ void Direct3D11Renderer::Draw()
 
 
 	//constant buffer
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;
-
 	struct VSCBUFF
 	{
 		DirectX::XMMATRIX transform;
-	}vcbuffData;
-	
-	vcbuffData.transform = transform;
+	};
 
-	D3D11_BUFFER_DESC cbDesc = {};
-	cbDesc.ByteWidth = (sizeof(VSCBUFF));
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
+	std::unique_ptr<VSCBUFF> cbData = std::make_unique<VSCBUFF>();
+	cbData.get()->transform = transform;
 
-	D3D11_SUBRESOURCE_DATA cbdata;
-	cbdata.pSysMem = &vcbuffData;
-	cbdata.SysMemPitch = 0;
-	cbdata.SysMemSlicePitch = 0;
-
-	pd3dDevice->CreateBuffer(&cbDesc, &cbdata, &pConstantBuffer) >> chk;
-
-	CHECK_INFOQUEUE( pImmediateContext->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf()) );
-
-	D3D11_MAPPED_SUBRESOURCE ms = {};
-
-	pImmediateContext->Map(pConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &ms) >> chk;
-	memcpy(ms.pData, &vcbuffData, sizeof(vcbuffData));
-	CHECK_INFOQUEUE( pImmediateContext->Unmap(pConstantBuffer.Get(), 0u) );
+	std::unique_ptr<Direct3D11ConstantBuffer<VSCBUFF>> constantBuffer = std::make_unique<Direct3D11ConstantBuffer<VSCBUFF>>(*this, cbData, Direct3D11ConstantBuffer<VSCBUFF>::ConstantBufferType::VertexShaderConstantBuffer);
+	constantBuffer.get()->Bind(*this);
+	constantBuffer.get()->UpdateData(*this, cbData);
 
 
 	//Draw Frame-----------------------------------------------------------------------------------------------------------------------------------------
@@ -265,7 +185,7 @@ void Direct3D11Renderer::Draw()
 	CHECK_INFOQUEUE( pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color) );
 
 	//draw call
-	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(std::size(indices), 0u, 0u));
+	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indices.size(), 0u, 0u));
 
 	//swap buffer
 	pSwapChain->Present(1u, 0) >> chk;

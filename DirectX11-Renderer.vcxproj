@@ -141,7 +141,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Direct3D11IndexBuffer.cpp" />
+    <ClCompile Include="src\Direct3D11InputLayout.cpp" />
     <ClCompile Include="src\Direct3D11PixelShader.cpp" />
+    <ClCompile Include="src\Direct3D11SamplerState.cpp" />
+    <ClCompile Include="src\Direct3D11Texture2D.cpp" />
     <ClCompile Include="src\Direct3D11VertexShader.cpp" />
     <ClCompile Include="src\DxgiInfoManager.cpp" />
     <ClCompile Include="src\EngineWindow.cpp" />
@@ -151,8 +155,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3rdparty\stb_image.h" />
+    <ClInclude Include="src\Direct3D11ConstantBuffer.h" />
+    <ClInclude Include="src\Direct3D11IndexBuffer.h" />
+    <ClInclude Include="src\Direct3D11InputLayout.h" />
     <ClInclude Include="src\Direct3D11PixelShader.h" />
     <ClInclude Include="src\Direct3D11Renderer.h" />
+    <ClInclude Include="src\Direct3D11SamplerState.h" />
+    <ClInclude Include="src\Direct3D11Texture2D.h" />
     <ClInclude Include="src\Direct3D11VertexBuffer.h" />
     <ClInclude Include="src\Direct3D11VertexShader.h" />
     <ClInclude Include="src\DxgiInfoManager.h" />

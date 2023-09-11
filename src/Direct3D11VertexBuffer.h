@@ -10,7 +10,7 @@ template<typename T>
 class Direct3D11VertexBuffer
 {
 public:
-	Direct3D11VertexBuffer(Direct3D11Renderer& pd3dRenderer, std::vector<T> vertices) : stride(sizeof(T))
+	Direct3D11VertexBuffer(Direct3D11Renderer& d3dRenderer, std::vector<T> vertices) : stride(sizeof(T))
 	{
 		CheckerToken chk = {};
 
@@ -25,13 +25,13 @@ public:
 		D3D11_SUBRESOURCE_DATA vsdata = {};
 		vsdata.pSysMem = vertices.data();
 
-		pd3dRenderer.GetDevice()->CreateBuffer(&vbdesc, &vsdata, &pVertexBuffer) >> chk;
+		d3dRenderer.GetDevice()->CreateBuffer(&vbdesc, &vsdata, &pVertexBuffer) >> chk;
 	}
 
-	void Bind(Direct3D11Renderer& pd3dRenderer)
+	void Bind(Direct3D11Renderer& d3dRenderer)
 	{
 		unsigned int offset = 0u;
-		pd3dRenderer.GetImmediateContext()->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
+		d3dRenderer.GetImmediateContext()->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 	}
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;

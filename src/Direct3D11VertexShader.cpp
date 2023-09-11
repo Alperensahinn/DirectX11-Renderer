@@ -5,7 +5,7 @@
 
 #pragma comment(lib, "D3DCompiler.lib")
 
-Direct3D11VertexShader::Direct3D11VertexShader(Direct3D11Renderer& pd3dRenderer, std::string path)
+Direct3D11VertexShader::Direct3D11VertexShader(Direct3D11Renderer& d3dRenderer, std::string path)
 {
 	CheckerToken chk = {};
 
@@ -14,12 +14,12 @@ Direct3D11VertexShader::Direct3D11VertexShader(Direct3D11Renderer& pd3dRenderer,
 
 	D3DReadFileToBlob(sw, &pBlob) >> chk;
 
-	pd3dRenderer.GetDevice()->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pVertexShader) >> chk;
+	d3dRenderer.GetDevice()->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pVertexShader) >> chk;
 }
 
-void Direct3D11VertexShader::Bind(Direct3D11Renderer& pd3dRenderer)
+void Direct3D11VertexShader::Bind(Direct3D11Renderer& d3dRenderer)
 {
-	pd3dRenderer.GetImmediateContext()->VSSetShader(pVertexShader.Get(), NULL, 0u);
+	d3dRenderer.GetImmediateContext()->VSSetShader(pVertexShader.Get(), NULL, 0u);
 }
 
 ID3DBlob* Direct3D11VertexShader::GetBlob()

@@ -5,7 +5,7 @@
 
 #pragma comment(lib, "D3DCompiler.lib")
 
-Direct3D11PixelShader::Direct3D11PixelShader(Direct3D11Renderer& pd3dRenderer, std::string path)
+Direct3D11PixelShader::Direct3D11PixelShader(Direct3D11Renderer& d3dRenderer, std::string path)
 {
 	CheckerToken chk = {};
 
@@ -16,10 +16,10 @@ Direct3D11PixelShader::Direct3D11PixelShader(Direct3D11Renderer& pd3dRenderer, s
 
 	D3DReadFileToBlob(sw, &pBlob) >> chk;
 
-	pd3dRenderer.GetDevice()->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pPixelShader) >> chk;
+	d3dRenderer.GetDevice()->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, &pPixelShader) >> chk;
 }
 
-void Direct3D11PixelShader::Bind(Direct3D11Renderer& pd3dRenderer)
+void Direct3D11PixelShader::Bind(Direct3D11Renderer& d3dRenderer)
 {
-	pd3dRenderer.GetImmediateContext()->PSSetShader(pPixelShader.Get(), NULL, 0u);
+	d3dRenderer.GetImmediateContext()->PSSetShader(pPixelShader.Get(), NULL, 0u);
 }

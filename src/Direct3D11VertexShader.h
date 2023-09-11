@@ -6,9 +6,9 @@
 class Direct3D11VertexShader
 {
 public:
-	Direct3D11VertexShader(Direct3D11Renderer& pd3dRenderer, std::string path);
+	Direct3D11VertexShader(Direct3D11Renderer& d3dRenderer, std::string path);
 
-	void Bind(Direct3D11Renderer& pd3dRenderer);
+	void Bind(Direct3D11Renderer& d3dRenderer);
 	ID3DBlob* GetBlob();
 private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
