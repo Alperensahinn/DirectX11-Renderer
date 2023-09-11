@@ -13,14 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\D3D11">
-      <UniqueIdentifier>{f1f67624-b3d9-4476-b022-4bf956bf5532}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Utilities">
       <UniqueIdentifier>{10f25bc3-6d8c-4257-8b1b-0482199245fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\D3D11">
-      <UniqueIdentifier>{d0704670-dc63-42b1-8075-0b8b69eaef63}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Utilities">
       <UniqueIdentifier>{69839f5a-f4df-491e-8cef-51b514639ac8}</UniqueIdentifier>
@@ -31,50 +25,59 @@
     <Filter Include="Header Files\3rd Party">
       <UniqueIdentifier>{e42344a5-0f96-4e05-b293-9fddb8eccadd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{a787f93b-db83-4b08-ab7f-d9fc53ace415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\D3D11">
+      <UniqueIdentifier>{f1f67624-b3d9-4476-b022-4bf956bf5532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{9beba413-4be5-420e-bf4c-29b9bae8e7b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\D3D11">
+      <UniqueIdentifier>{d0704670-dc63-42b1-8075-0b8b69eaef63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Direct3D11Renderer.cpp">
-      <Filter>Source Files\D3D11</Filter>
+    <ClCompile Include="src\Graphics\Direct3D11\DxgiInfoManager.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
     </ClCompile>
-    <ClCompile Include="src\DxgiInfoManager.cpp">
-      <Filter>Source Files\D3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GraphicsError.cpp">
+    <ClCompile Include="src\Graphics\Direct3D11\DirectX11Error.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="src\EngineWindow.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="src\Direct3D11VertexShader.cpp">
-      <Filter>Source Files\D3D11</Filter>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11IndexBuffer.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
     </ClCompile>
-    <ClCompile Include="src\Direct3D11PixelShader.cpp">
-      <Filter>Source Files\D3D11</Filter>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11InputLayout.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
     </ClCompile>
-    <ClCompile Include="src\Direct3D11IndexBuffer.cpp">
-      <Filter>Source Files\D3D11</Filter>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11PixelShader.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
     </ClCompile>
-    <ClCompile Include="src\Direct3D11SamplerState.cpp">
-      <Filter>Source Files\D3D11</Filter>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11Renderer.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
     </ClCompile>
-    <ClCompile Include="src\Direct3D11InputLayout.cpp">
-      <Filter>Source Files\D3D11</Filter>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11SamplerState.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
     </ClCompile>
-    <ClCompile Include="src\Direct3D11Texture2D.cpp">
-      <Filter>Source Files\D3D11</Filter>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11Texture2D.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11VertexShader.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Direct3D11Renderer.h">
-      <Filter>Header Files\D3D11</Filter>
+    <ClInclude Include="src\Graphics\Direct3D11\DxgiInfoManager.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
-    <ClInclude Include="src\DxgiInfoManager.h">
-      <Filter>Header Files\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GraphicsError.h">
+    <ClInclude Include="src\Graphics\Direct3D11\DirectX11Error.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="src\EngineWindow.h">
@@ -86,32 +89,35 @@
     <ClInclude Include="src\Macros.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="src\Direct3D11VertexBuffer.h">
-      <Filter>Header Files\D3D11</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Direct3D11VertexShader.h">
-      <Filter>Header Files\D3D11</Filter>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexShader.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
-    <ClInclude Include="src\Direct3D11PixelShader.h">
-      <Filter>Header Files\D3D11</Filter>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11ConstantBuffer.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
-    <ClInclude Include="src\Direct3D11IndexBuffer.h">
-      <Filter>Header Files\D3D11</Filter>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11IndexBuffer.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
-    <ClInclude Include="src\Direct3D11SamplerState.h">
-      <Filter>Header Files\D3D11</Filter>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11InputLayout.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
-    <ClInclude Include="src\Direct3D11ConstantBuffer.h">
-      <Filter>Header Files\D3D11</Filter>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11PixelShader.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
-    <ClInclude Include="src\Direct3D11InputLayout.h">
-      <Filter>Header Files\D3D11</Filter>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Renderer.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
-    <ClInclude Include="src\Direct3D11Texture2D.h">
-      <Filter>Header Files\D3D11</Filter>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11SamplerState.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Texture2D.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexBuffer.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

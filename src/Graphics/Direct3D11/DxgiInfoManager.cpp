@@ -1,5 +1,5 @@
 #include "DxgiInfoManager.h"
-#include "GraphicsError.h"
+#include "DirectX11Error.h"
 
 #pragma comment(lib, "dxguid.lib")
 

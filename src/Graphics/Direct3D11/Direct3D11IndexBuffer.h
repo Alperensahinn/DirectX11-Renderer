@@ -2,6 +2,7 @@
 
 #include "Direct3D11Renderer.h"
 #include <wrl.h>
+#include <vector>
 
 class Direct3D11IndexBuffer
 {

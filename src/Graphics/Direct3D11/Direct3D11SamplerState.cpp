@@ -1,5 +1,5 @@
 #include "Direct3D11SamplerState.h"
-#include "GraphicsError.h"
+#include "DirectX11Error.h"
 
 Direct3D11SamplerState::Direct3D11SamplerState(Direct3D11Renderer& d3dRenderer)
 {

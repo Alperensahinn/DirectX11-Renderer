@@ -2,6 +2,7 @@
 
 #include "Direct3D11Renderer.h"
 #include <wrl.h>
+#include <string>
 
 class Direct3D11PixelShader
 {

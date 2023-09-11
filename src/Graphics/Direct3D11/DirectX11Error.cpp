@@ -1,4 +1,4 @@
-#include "GraphicsError.h"
+#include "DirectX11Error.h"
 #include <iostream>
 
 #include < stdlib.h >

@@ -1,5 +1,5 @@
 #include "Direct3D11PixelShader.h"
-#include "GraphicsError.h"
+#include "DirectX11Error.h"
 
 #include <d3dcompiler.h>
 

@@ -2,6 +2,7 @@
 
 #include "Direct3D11Renderer.h"
 #include <d3dcompiler.h>
+#include <vector>
 
 class Direct3D11InputLayout
 {

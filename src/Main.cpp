@@ -3,7 +3,7 @@
 #include "GLFW\glfw3native.h"
 
 
-#include "Direct3D11Renderer.h"
+#include "Graphics\Direct3D11\Direct3D11Renderer.h"
 #include "EngineWindow.h"
 
 #include <iostream>

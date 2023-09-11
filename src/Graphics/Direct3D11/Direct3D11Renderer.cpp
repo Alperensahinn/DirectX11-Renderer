@@ -1,17 +1,17 @@
 #include "Direct3D11Renderer.h"
-#include "GraphicsError.h"
-#include "Macros.h"
-#include "EngineWindow.h"
+#include "DirectX11Error.h"
+#include "..\..\Macros.h"
+#include "..\..\EngineWindow.h"
 
 #define STB_IMAGE_IMPLEMENTATION    
-#include "3rdparty\stb_image.h"
+#include "..\..\3rdparty\stb_image.h"
 
 
 #include <iostream>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 
-#include "Mesh.h"
+#include "..\..\Mesh.h"
 #include "Direct3D11VertexBuffer.h"
 #include "Direct3D11IndexBuffer.h"
 #include "Direct3D11VertexShader.h"
@@ -102,7 +102,6 @@ ID3D11DeviceContext* Direct3D11Renderer::GetImmediateContext()
 void Direct3D11Renderer::Draw()
 {
 	CheckerToken chk = {};
-
 
 	//vertex buffer-----------------------------------------------------------------------------------------------------------------------------------------
 	std::vector<Vertex> vertices;

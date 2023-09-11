@@ -1,6 +1,6 @@
 #include "Direct3D11Texture2D.h"
-#include "GraphicsError.h"
-#include "3rdparty\stb_image.h"
+#include "DirectX11Error.h"
+#include "..\..\3rdparty\stb_image.h"
 
 Direct3D11Texture2D::Direct3D11Texture2D(Direct3D11Renderer& d3dRenderer, std::string filePath, unsigned int slot) : slot(slot)
 {	

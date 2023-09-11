@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Direct3D11Renderer.h"
-#include "GraphicsError.h"
+#include "DirectX11Error.h"
 
 #include <wrl.h>
 #include <vector>
