@@ -72,6 +72,24 @@
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11VertexShader.cpp">
       <Filter>Source Files\Graphics\D3D11</Filter>
     </ClCompile>
+    <ClCompile Include="src\App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11Drawable.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Mesh.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\BasicCube.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Model.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Direct3D11\DxgiInfoManager.h">
@@ -88,9 +106,6 @@
     </ClInclude>
     <ClInclude Include="src\Macros.h">
       <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mesh.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexShader.h">
       <Filter>Header Files\Graphics\D3D11</Filter>
@@ -118,6 +133,24 @@
     </ClInclude>
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexBuffer.h">
       <Filter>Header Files\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Drawable.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Material.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Mesh.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\BasicCube.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Model.h">
+      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

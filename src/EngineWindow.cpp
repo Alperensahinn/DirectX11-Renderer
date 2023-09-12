@@ -1,8 +1,7 @@
 #include "EngineWindow.h"
 
-
-int engine::window::windowWidth = 800;
-int engine::window::windowHeight = 800;
+int engine::window::windowWidth = 1600;
+int engine::window::windowHeight = 900;
 
 std::wstring engine::window::GetErrorDescription(HRESULT hr)
 {
@@ -28,4 +27,36 @@ std::wstring engine::window::GetErrorDescription(HRESULT hr)
 	}
 
 	return description;
+}
+
+namespace engine::window
+{
+	EngineWindow::EngineWindow()
+	{
+		glfwInit();
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+		pGLFWWindow = glfwCreateWindow(engine::window::windowWidth, engine::window::windowHeight, "Renderer (Direct3D_11)", NULL, NULL);
+
+		glfwMakeContextCurrent(pGLFWWindow);
+
+		hWnd = glfwGetWin32Window(pGLFWWindow);
+
+		pd3d11Renderer = std::make_unique<Direct3D11Renderer>(hWnd);
+	}
+
+	EngineWindow::~EngineWindow()
+	{
+		glfwTerminate();
+	}
+
+	GLFWwindow& EngineWindow::GetGLFWWindow()
+	{
+		return *pGLFWWindow;
+	}
+
+	Direct3D11Renderer& EngineWindow::GetD3D11Renderer()
+	{
+		return *pd3d11Renderer;
+	}
 }

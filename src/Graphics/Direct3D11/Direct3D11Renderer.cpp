@@ -11,7 +11,6 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 
-#include "..\..\Mesh.h"
 #include "Direct3D11VertexBuffer.h"
 #include "Direct3D11IndexBuffer.h"
 #include "Direct3D11VertexShader.h"
@@ -73,7 +72,28 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 	pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer) >> chk;
 	pd3dDevice->CreateRenderTargetView(pBackBuffer.Get(), NULL, &pRenderTargetView) >> chk;
 
-	CHECK_INFOQUEUE( pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), NULL));
+	//depth buffer
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pDepthTexture;
+	D3D11_TEXTURE2D_DESC dtdesc = {};
+	dtdesc.Width = engine::window::windowWidth;
+	dtdesc.Height = engine::window::windowHeight;
+	dtdesc.MipLevels = 1u;
+	dtdesc.ArraySize = 1u;
+	dtdesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dtdesc.SampleDesc.Count = 1u;
+	dtdesc.SampleDesc.Quality = 0u;
+	dtdesc.Usage = D3D11_USAGE_DEFAULT;
+	dtdesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	pd3dDevice->CreateTexture2D(&dtdesc, NULL, &pDepthTexture) >> chk;
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvdesc = {};
+	dsvdesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsvdesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+
+	pd3dDevice->CreateDepthStencilView(pDepthTexture.Get(), &dsvdesc, &pDepthStencilView) >> chk;
+
+	CHECK_INFOQUEUE( pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get()));
 
 	// Setup the viewport
 	D3D11_VIEWPORT vp;
@@ -99,39 +119,47 @@ ID3D11DeviceContext* Direct3D11Renderer::GetImmediateContext()
 	return pImmediateContext.Get();
 }
 
-void Direct3D11Renderer::Draw()
+void Direct3D11Renderer::Draw(float rotateAround)
 {
 	CheckerToken chk = {};
-
-	//vertex buffer-----------------------------------------------------------------------------------------------------------------------------------------
-	std::vector<Vertex> vertices;
-	vertices.push_back({ 0.5f, 0.5f, 0.0f,	1.0f, 1.0f });
-	vertices.push_back({ 0.5f, -0.5f, 0.0f,	1.0f, 0.0f });
-	vertices.push_back({ -0.5f, -0.5f, 0.0f,	0.0f, 0.0f });
-	vertices.push_back({ -0.5f, 0.5f, 0.0f,	0.0f, 1.0f });
-
-	std::unique_ptr<Direct3D11VertexBuffer<Vertex>> vertexBuffer = std::make_unique<Direct3D11VertexBuffer<Vertex>>(*this, vertices);
-	vertexBuffer.get()->Bind(*this);
-
 
 	//index buffer-----------------------------------------------------------------------------------------------------------------------------------------
 	std::vector<unsigned int> indices;
 	indices.push_back(0);
 	indices.push_back(1);
 	indices.push_back(2);
-
 	indices.push_back(0);
 	indices.push_back(2);
 	indices.push_back(3);
 
+	indices.push_back(6);
+	indices.push_back(5);
+	indices.push_back(4);
+	indices.push_back(6);
+	indices.push_back(4);
+	indices.push_back(7);
 
-	std::unique_ptr<Direct3D11IndexBuffer> indexBuffer = std::make_unique<Direct3D11IndexBuffer>(*this, indices);
-	indexBuffer.get()->Bind(*this);
+	indices.push_back(10);
+	indices.push_back(8);
+	indices.push_back(9);
+	indices.push_back(10);
+	indices.push_back(9);
+	indices.push_back(11);
+	
+	indices.push_back(14);
+	indices.push_back(12);
+	indices.push_back(13);
+	indices.push_back(14);
+	indices.push_back(13);
+	indices.push_back(15);
 
+
+	//std::unique_ptr<Direct3D11IndexBuffer> indexBuffer = std::make_unique<Direct3D11IndexBuffer>(*this, indices);
+	//indexBuffer.get()->Bind(*this);
+	
 
 	//vertex shader-----------------------------------------------------------------------------------------------------------------------------------------
 	std::unique_ptr<Direct3D11VertexShader> vertexShader = std::make_unique<Direct3D11VertexShader>(*this, "x64\\Debug\\VertexShaderTest.cso");
-	vertexShader.get()->Bind(*this);
 
 
 	//input layout-----------------------------------------------------------------------------------------------------------------------------------------
@@ -141,17 +169,7 @@ void Direct3D11Renderer::Draw()
 
 	std::unique_ptr<Direct3D11InputLayout> inputLayout = std::make_unique<Direct3D11InputLayout>(*this, ied, vertexShader.get()->GetBlob());
 	inputLayout.get()->Bind(*this);
-
-
-	//pixel shader-----------------------------------------------------------------------------------------------------------------------------------------
-	std::unique_ptr<Direct3D11PixelShader> pixelShader = std::make_unique<Direct3D11PixelShader>(*this, "x64\\Debug\\PixelShaderTest.cso");
-	pixelShader.get()->Bind(*this);
 	
-
-	//texture-----------------------------------------------------------------------------------------------------------------------------------------
-	std::unique_ptr<Direct3D11Texture2D> texture2D = std::make_unique<Direct3D11Texture2D>(*this, "Resources\\Textures\\FatihChan.png", 0u);
-	texture2D.get()->Bind(*this);
-
 
 	//Sampler State-----------------------------------------------------------------------------------------------------------------------------------------
 	std::unique_ptr<Direct3D11SamplerState> samplerState = std::make_unique<Direct3D11SamplerState>(*this);
@@ -159,8 +177,18 @@ void Direct3D11Renderer::Draw()
 
 
 	//Math test
-	DirectX::XMMATRIX transform = DirectX::XMMatrixIdentity();
-	transform = DirectX::XMMatrixMultiply(transform, DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(90.0f)));
+	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
+	//model = DirectX::XMMatrixMultiply(model, DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(90.0f)));
+	model = DirectX::XMMatrixMultiply(model, DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rotateAround)));
+
+	DirectX::XMFLOAT4 cameraPos = DirectX::XMFLOAT4(0.0f, 2.0f, -5.0f, 1.0f);
+	DirectX::XMFLOAT4 lookAt = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT4 cameraUp = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+
+	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat4(&cameraPos), DirectX::XMLoadFloat4(&lookAt), DirectX::XMLoadFloat4(&cameraUp));
+	DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45.0f), 16.0f/9.0f, 0.1f, 100.0f);
+
+	DirectX::XMMATRIX mvp = DirectX::XMMatrixTranspose(model * view * projection);
 
 
 	//constant buffer
@@ -170,7 +198,7 @@ void Direct3D11Renderer::Draw()
 	};
 
 	std::unique_ptr<VSCBUFF> cbData = std::make_unique<VSCBUFF>();
-	cbData.get()->transform = transform;
+	cbData.get()->transform = mvp;
 
 	std::unique_ptr<Direct3D11ConstantBuffer<VSCBUFF>> constantBuffer = std::make_unique<Direct3D11ConstantBuffer<VSCBUFF>>(*this, cbData, Direct3D11ConstantBuffer<VSCBUFF>::ConstantBufferType::VertexShaderConstantBuffer);
 	constantBuffer.get()->Bind(*this);
@@ -182,6 +210,7 @@ void Direct3D11Renderer::Draw()
 	//clear back buffer
 	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
 	CHECK_INFOQUEUE( pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color) );
+	CHECK_INFOQUEUE( pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0) );
 
 	//draw call
 	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indices.size(), 0u, 0u));

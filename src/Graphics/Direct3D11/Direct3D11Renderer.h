@@ -10,12 +10,13 @@ public:
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetImmediateContext();
-	void Draw();
+	void Draw(float rotateAround);
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device> pd3dDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pImmediateContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTargetView;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView;
 private:
 	DxgiInfoManager infoManager;
 };

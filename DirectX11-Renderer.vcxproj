@@ -141,6 +141,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\Graphics\BasicCube.cpp" />
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11Drawable.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\DxgiInfoManager.cpp" />
     <ClCompile Include="src\EngineWindow.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11IndexBuffer.cpp" />
@@ -150,11 +153,17 @@
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11SamplerState.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11Texture2D.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11VertexShader.cpp" />
+    <ClCompile Include="src\Graphics\Material.cpp" />
+    <ClCompile Include="src\Graphics\Model.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\DirectX11Error.cpp" />
+    <ClCompile Include="src\Graphics\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3rdparty\stb_image.h" />
+    <ClInclude Include="src\App.h" />
+    <ClInclude Include="src\Graphics\BasicCube.h" />
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Drawable.h" />
     <ClInclude Include="src\Graphics\Direct3D11\DxgiInfoManager.h" />
     <ClInclude Include="src\EngineWindow.h" />
     <ClInclude Include="src\Graphics\Direct3D11\DirectX11Error.h" />
@@ -167,8 +176,10 @@
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Texture2D.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexBuffer.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexShader.h" />
+    <ClInclude Include="src\Graphics\Material.h" />
+    <ClInclude Include="src\Graphics\Model.h" />
     <ClInclude Include="src\Macros.h" />
-    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\Graphics\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Shaders\PixelShaderTest.hlsl">

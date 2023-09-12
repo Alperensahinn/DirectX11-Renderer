@@ -1,40 +1,15 @@
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include "GLFW\glfw3.h"
-#include "GLFW\glfw3native.h"
+#include "App.h"
 
-
-#include "Graphics\Direct3D11\Direct3D11Renderer.h"
-#include "EngineWindow.h"
-
-#include <iostream>
+using namespace engine::app;
 
 int main()
 {
-	glfwInit();
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-	GLFWwindow* window = glfwCreateWindow(engine::window::windowWidth, engine::window::windowHeight, "Renderer (Direct3D_11)", NULL, NULL);
-
-	if(window == nullptr)
-	{
-		std::cout << "GLFW Window Creation Failed!";
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-
-	HWND hWnd = glfwGetWin32Window(window);
-
-	std::unique_ptr<Direct3D11Renderer> pd3dRenderer = std::make_unique<Direct3D11Renderer>(hWnd);
-
-	while (!glfwWindowShouldClose(window))
-	{
-		pd3dRenderer->Draw();
-		glfwPollEvents();
-	}
-
-	glfwTerminate();
-
-	return 0;
+    try
+    {
+        App{}.Run();
+    }
+    catch (const std::exception& e)
+    {
+        MessageBox(nullptr, L"Exception", L"Standart Exception", MB_OK | MB_ICONEXCLAMATION);
+    }
 }
