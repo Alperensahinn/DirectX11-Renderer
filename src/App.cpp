@@ -43,7 +43,7 @@ namespace engine::app
 
 			model1.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), camera.get()->GetViewProjection());
 
-			model2.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), camera.get()->GetViewProjection());
+			//model2.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), camera.get()->GetViewProjection());
 
 			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
 		}

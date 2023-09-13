@@ -167,7 +167,6 @@
     <ClInclude Include="src\App.h" />
     <ClInclude Include="src\Graphics\BasicCube.h" />
     <ClInclude Include="src\Graphics\Camera.h" />
-    <ClInclude Include="src\Graphics\Cube.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Drawable.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11ModelConstantBuffer.h" />
     <ClInclude Include="src\Graphics\Direct3D11\DxgiInfoManager.h" />

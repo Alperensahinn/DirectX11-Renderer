@@ -164,9 +164,6 @@
     <ClInclude Include="src\Graphics\Camera.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Cube.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\Graphics\MaterialFactory.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
