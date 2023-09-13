@@ -21,6 +21,7 @@ public:
 	Mesh(Direct3D11Renderer& pd3dRenderer, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 
 	void Bind(Direct3D11Renderer& pd3dRenderer);
+	unsigned int GetIndexCount();
 protected:
 	std::unique_ptr<Direct3D11VertexBuffer<Vertex>> pVertexBuffer;
 	std::unique_ptr<Direct3D11IndexBuffer> pIndexBuffer;

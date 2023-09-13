@@ -9,18 +9,10 @@
 
 #include <iostream>
 #include <d3dcompiler.h>
-#include <DirectXMath.h>
 
-#include "Direct3D11VertexBuffer.h"
-#include "Direct3D11IndexBuffer.h"
-#include "Direct3D11VertexShader.h"
-#include "Direct3D11PixelShader.h"
-#include "Direct3D11SamplerState.h"
 #include "Direct3D11ConstantBuffer.h"
-#include "Direct3D11InputLayout.h"
-#include "Direct3D11Texture2D.h"
 
-
+#include "..\Model.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -119,103 +111,21 @@ ID3D11DeviceContext* Direct3D11Renderer::GetImmediateContext()
 	return pImmediateContext.Get();
 }
 
-void Direct3D11Renderer::Draw(float rotateAround)
+void Direct3D11Renderer::Draw(unsigned int indexCount)
+{
+	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
+}
+
+void Direct3D11Renderer::StartFrame()
+{
+	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
+	CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
+	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0));
+}
+
+void Direct3D11Renderer::EndFrame()
 {
 	CheckerToken chk = {};
-
-	//index buffer-----------------------------------------------------------------------------------------------------------------------------------------
-	std::vector<unsigned int> indices;
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(2);
-	indices.push_back(0);
-	indices.push_back(2);
-	indices.push_back(3);
-
-	indices.push_back(6);
-	indices.push_back(5);
-	indices.push_back(4);
-	indices.push_back(6);
-	indices.push_back(4);
-	indices.push_back(7);
-
-	indices.push_back(10);
-	indices.push_back(8);
-	indices.push_back(9);
-	indices.push_back(10);
-	indices.push_back(9);
-	indices.push_back(11);
-	
-	indices.push_back(14);
-	indices.push_back(12);
-	indices.push_back(13);
-	indices.push_back(14);
-	indices.push_back(13);
-	indices.push_back(15);
-
-
-	//std::unique_ptr<Direct3D11IndexBuffer> indexBuffer = std::make_unique<Direct3D11IndexBuffer>(*this, indices);
-	//indexBuffer.get()->Bind(*this);
-	
-
-	//vertex shader-----------------------------------------------------------------------------------------------------------------------------------------
-	std::unique_ptr<Direct3D11VertexShader> vertexShader = std::make_unique<Direct3D11VertexShader>(*this, "x64\\Debug\\VertexShaderTest.cso");
-
-
-	//input layout-----------------------------------------------------------------------------------------------------------------------------------------
-	std::vector<D3D11_INPUT_ELEMENT_DESC> ied;
-	ied.push_back({ "Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u });
-	ied.push_back({ "TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u });
-
-	std::unique_ptr<Direct3D11InputLayout> inputLayout = std::make_unique<Direct3D11InputLayout>(*this, ied, vertexShader.get()->GetBlob());
-	inputLayout.get()->Bind(*this);
-	
-
-	//Sampler State-----------------------------------------------------------------------------------------------------------------------------------------
-	std::unique_ptr<Direct3D11SamplerState> samplerState = std::make_unique<Direct3D11SamplerState>(*this);
-	samplerState.get()->Bind(*this);
-
-
-	//Math test
-	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
-	//model = DirectX::XMMatrixMultiply(model, DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(90.0f)));
-	model = DirectX::XMMatrixMultiply(model, DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rotateAround)));
-
-	DirectX::XMFLOAT4 cameraPos = DirectX::XMFLOAT4(0.0f, 2.0f, -5.0f, 1.0f);
-	DirectX::XMFLOAT4 lookAt = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT4 cameraUp = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-
-	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMLoadFloat4(&cameraPos), DirectX::XMLoadFloat4(&lookAt), DirectX::XMLoadFloat4(&cameraUp));
-	DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45.0f), 16.0f/9.0f, 0.1f, 100.0f);
-
-	DirectX::XMMATRIX mvp = DirectX::XMMatrixTranspose(model * view * projection);
-
-
-	//constant buffer
-	struct VSCBUFF
-	{
-		DirectX::XMMATRIX transform;
-	};
-
-	std::unique_ptr<VSCBUFF> cbData = std::make_unique<VSCBUFF>();
-	cbData.get()->transform = mvp;
-
-	std::unique_ptr<Direct3D11ConstantBuffer<VSCBUFF>> constantBuffer = std::make_unique<Direct3D11ConstantBuffer<VSCBUFF>>(*this, cbData, Direct3D11ConstantBuffer<VSCBUFF>::ConstantBufferType::VertexShaderConstantBuffer);
-	constantBuffer.get()->Bind(*this);
-	constantBuffer.get()->UpdateData(*this, cbData);
-
-
-	//Draw Frame-----------------------------------------------------------------------------------------------------------------------------------------
-
-	//clear back buffer
-	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
-	CHECK_INFOQUEUE( pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color) );
-	CHECK_INFOQUEUE( pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0) );
-
-	//draw call
-	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indices.size(), 0u, 0u));
-
-	//swap buffer
 	pSwapChain->Present(1u, 0) >> chk;
 }
 

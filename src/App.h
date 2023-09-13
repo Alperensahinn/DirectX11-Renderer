@@ -1,6 +1,8 @@
 #pragma once
 #include "EngineWindow.h"
 #include "Graphics\Direct3D11\Direct3D11Drawable.h"
+#include "Graphics\Model.h";
+#include "Graphics\Camera.h"
 
 #include <memory>
 
@@ -15,7 +17,9 @@ namespace engine::app
 	private:
 		std::unique_ptr<engine::window::EngineWindow> pEngineWindow;
 
-		std::unique_ptr<Direct3D11Drawable> pD3D11Drawable;
-		std::unique_ptr<Direct3D11Drawable> pD3D11Drawable2;
+		std::unique_ptr<Camera> camera;
+
+		std::unique_ptr<Model> model1;
+		std::unique_ptr<Model> model2;
 	};
 }

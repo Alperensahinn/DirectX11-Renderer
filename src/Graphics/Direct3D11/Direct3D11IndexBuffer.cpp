@@ -1,7 +1,7 @@
 #include "Direct3D11IndexBuffer.h"
 #include "DirectX11Error.h"
 
-Direct3D11IndexBuffer::Direct3D11IndexBuffer(Direct3D11Renderer& d3dRenderer, std::vector<unsigned int>& indices)
+Direct3D11IndexBuffer::Direct3D11IndexBuffer(Direct3D11Renderer& d3dRenderer, std::vector<unsigned int>& indices) : count(indices.size())
 {
 	CheckerToken chk = {};
 

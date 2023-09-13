@@ -11,3 +11,8 @@ void Mesh::Bind(Direct3D11Renderer& pd3dRenderer)
 	pVertexBuffer.get()->Bind(pd3dRenderer);
 	pIndexBuffer.get()->Bind(pd3dRenderer);
 }
+
+unsigned int Mesh::GetIndexCount()
+{
+	return pIndexBuffer.get()->count;
+}

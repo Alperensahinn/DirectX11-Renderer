@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include <DirectXMath.h>
 #include <wrl.h>
 #include "DxgiInfoManager.h"
 
@@ -10,7 +11,9 @@ public:
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetImmediateContext();
-	void Draw(float rotateAround);
+	void Draw(unsigned int indexCount);
+	void StartFrame();
+	void EndFrame();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device> pd3dDevice;

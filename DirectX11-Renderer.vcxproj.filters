@@ -90,6 +90,15 @@
     <ClCompile Include="src\Graphics\Model.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Camera.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\MaterialFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11ModelConstantBuffer.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Direct3D11\DxgiInfoManager.h">
@@ -151,6 +160,18 @@
     </ClInclude>
     <ClInclude Include="src\Graphics\Model.h">
       <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Camera.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Cube.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\MaterialFactory.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11ModelConstantBuffer.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

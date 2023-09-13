@@ -1,5 +1,6 @@
 #include "App.h"
 #include "Graphics\Material.h"
+#include "Graphics\MaterialFactory.h"
 #include "Graphics\Mesh.h"
 #include "Graphics\BasicCube.h"
 
@@ -9,25 +10,20 @@ namespace engine::app
 	{
 		pEngineWindow = std::make_unique<engine::window::EngineWindow>();
 
-		std::shared_ptr<Direct3D11VertexShader> pVertexShader = std::make_unique<Direct3D11VertexShader>(pEngineWindow.get()->GetD3D11Renderer(), "x64\\Debug\\VertexShaderTest.cso");
-		std::shared_ptr<Direct3D11PixelShader> pPixelShader = std::make_unique<Direct3D11PixelShader>(pEngineWindow.get()->GetD3D11Renderer(), "x64\\Debug\\PixelShaderTest.cso");
+		camera = std::make_unique<Camera>(0.0f, 2.0f, -5.0f);
 
-		std::shared_ptr<Direct3D11Texture2D> pTexture = std::make_shared<Direct3D11Texture2D>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\Textures\\FatihChan.png", 0u);
-
-		Material::MATERIAL_DESC mdesc = {};
-		mdesc.AlbedoTexture = pTexture;
-		mdesc.VertexShader = pVertexShader;
-		mdesc.PixelShader = pPixelShader;
-
-		std::shared_ptr<Material> pMaterial = std::make_shared<Material>(mdesc);
-		std::shared_ptr<Material> pMaterial2 = std::make_shared<Material>(mdesc);
+		//object creation------------------------------------------------------------------------------------------------------
+		std::shared_ptr<Material> material1 = MaterialFactory::CreateMaterial(pEngineWindow.get()->GetD3D11Renderer(), "x64\\Debug\\VertexShaderTest.cso", "x64\\Debug\\PixelShaderTest.cso", "Resources\\Textures\\FatihChan.png");
 
 		std::shared_ptr<Mesh> basicCube = std::make_shared<BasicCube>(pEngineWindow.get()->GetD3D11Renderer());
 
-		pD3D11Drawable = std::make_unique<Direct3D11Drawable>(basicCube, pMaterial);
-		pD3D11Drawable2 = std::make_unique<Direct3D11Drawable>(basicCube, pMaterial2);
+		model1 = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), basicCube, material1);
+		model2 = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), basicCube, material1);
+
+		model1.get()->SetScale(0.9f, 0.9f, 0.9f);
 		//object creation------------------------------------------------------------------------------------------------------
 	}
+
 	void App::Run()
 	{
 		float rotateAround = 0.0f;
@@ -36,14 +32,20 @@ namespace engine::app
 		{
 			glfwPollEvents();
 			
-			pD3D11Drawable.get()->Draw(pEngineWindow.get()->GetD3D11Renderer());
-			pD3D11Drawable2.get()->Draw(pEngineWindow.get()->GetD3D11Renderer());
+			model1.get()->SetRotation(0.0f, rotateAround, 0.0f);
 
-			pEngineWindow.get()->GetD3D11Renderer().Draw(rotateAround);
-
-			rotateAround += 1.0f;
+			rotateAround += 0.5f;
 
 			if (rotateAround > 360.f) rotateAround = 0.0f;
+			
+			//draw calls
+			pEngineWindow.get()->GetD3D11Renderer().StartFrame();
+
+			model1.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), camera.get()->GetViewProjection());
+
+			model2.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), camera.get()->GetViewProjection());
+
+			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
 		}
 	}
 }
