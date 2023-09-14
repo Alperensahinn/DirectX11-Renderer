@@ -42,6 +42,8 @@ namespace engine::window
 
 		hWnd = glfwGetWin32Window(pGLFWWindow);
 
+		input = std::make_unique<Input>(pGLFWWindow);
+
 		pd3d11Renderer = std::make_unique<Direct3D11Renderer>(hWnd);
 	}
 

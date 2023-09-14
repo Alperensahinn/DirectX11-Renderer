@@ -21,10 +21,10 @@ DirectX::XMMATRIX Model::GetModelMatrix()
 					
 	modelMatrix = DirectX::XMMatrixMultiply(modelMatrix, DirectX::XMMatrixScaling(scl_x, scl_y, scl_z));
 
-
-	modelMatrix = DirectX::XMMatrixMultiply(modelMatrix, DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(rot_x)));
-	modelMatrix = DirectX::XMMatrixMultiply(modelMatrix, DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rot_y)));
-	modelMatrix = DirectX::XMMatrixMultiply(modelMatrix, DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(rot_z)));
+	modelMatrix = DirectX::XMMatrixMultiply
+	(
+		modelMatrix, DirectX::XMMatrixRotationRollPitchYaw(DirectX::XMConvertToRadians(rot_x), DirectX::XMConvertToRadians(rot_y), DirectX::XMConvertToRadians(rot_z))
+	);
 
 	modelMatrix = DirectX::XMMatrixMultiply(modelMatrix, DirectX::XMMatrixTranslation(pos_x, pos_y, pos_z));
 
