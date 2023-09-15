@@ -11,7 +11,7 @@ namespace engine::app
 
 		camera = std::make_unique<Camera>(0.0f, 0.0f, -5.0f);
 
-		model_a = std::make_unique<Model_A>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\Sponza\\sponza.obj", "Resources\\Sponza\\");
+		model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\Sponza\\sponza.obj", "Resources\\Sponza\\");
 
 	}
 

@@ -3,7 +3,7 @@
 #include "Graphics\Direct3D11\Direct3D11Drawable.h"
 #include "Graphics\Camera.h"
 
-#include "Graphics\Model_A.h"
+#include "Graphics\Model.h"
 
 #include <memory>
 
@@ -20,6 +20,6 @@ namespace engine::app
 
 		std::unique_ptr<Camera> camera;
 
-		std::unique_ptr<Model_A> model_a;
+		std::unique_ptr<Model> model_a;
 	};
 }

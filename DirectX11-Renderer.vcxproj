@@ -158,7 +158,6 @@
     <ClCompile Include="src\Graphics\Material.cpp" />
     <ClCompile Include="src\Graphics\MaterialFactory.cpp" />
     <ClCompile Include="src\Graphics\Model.cpp" />
-    <ClCompile Include="src\Graphics\Model_A.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\DirectX11Error.cpp" />
@@ -185,7 +184,6 @@
     <ClInclude Include="src\Graphics\Material.h" />
     <ClInclude Include="src\Graphics\MaterialFactory.h" />
     <ClInclude Include="src\Graphics\Model.h" />
-    <ClInclude Include="src\Graphics\Model_A.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\Macros.h" />
   </ItemGroup>
