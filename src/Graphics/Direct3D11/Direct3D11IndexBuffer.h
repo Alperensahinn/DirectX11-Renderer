@@ -6,7 +6,7 @@
 
 class Direct3D11IndexBuffer
 {
-	friend class Mesh;
+	friend class MeshData;
 
 public:
 	Direct3D11IndexBuffer(Direct3D11Renderer& d3dRenderer, std::vector<unsigned int>& indices);

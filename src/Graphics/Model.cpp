@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model(Direct3D11Renderer& pd3dRenderer, std::shared_ptr<Mesh>& mesh, std::shared_ptr<Material>& material) : Direct3D11Drawable(pd3dRenderer, mesh, material)
+Model::Model(Direct3D11Renderer& pd3dRenderer, std::shared_ptr<MeshData>& mesh, std::shared_ptr<Material>& material) : Direct3D11Drawable(pd3dRenderer, mesh, material)
 {
 	pos_x = 0.0f;
 	pos_y = 0.0f;

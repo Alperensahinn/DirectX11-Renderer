@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;assimp/assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,12 +137,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;assimp/assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
-    <ClCompile Include="src\Graphics\BasicCube.cpp" />
     <ClCompile Include="src\Graphics\Camera.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11Drawable.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11ModelConstantBuffer.cpp" />
@@ -155,18 +154,18 @@
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11SamplerState.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11Texture2D.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11VertexShader.cpp" />
+    <ClCompile Include="src\Graphics\Light.cpp" />
     <ClCompile Include="src\Graphics\Material.cpp" />
     <ClCompile Include="src\Graphics\MaterialFactory.cpp" />
     <ClCompile Include="src\Graphics\Model.cpp" />
+    <ClCompile Include="src\Graphics\Model_A.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\DirectX11Error.cpp" />
-    <ClCompile Include="src\Graphics\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3rdparty\stb_image.h" />
     <ClInclude Include="src\App.h" />
-    <ClInclude Include="src\Graphics\BasicCube.h" />
     <ClInclude Include="src\Graphics\Camera.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Drawable.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11ModelConstantBuffer.h" />
@@ -182,12 +181,13 @@
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Texture2D.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexBuffer.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexShader.h" />
+    <ClInclude Include="src\Graphics\Light.h" />
     <ClInclude Include="src\Graphics\Material.h" />
     <ClInclude Include="src\Graphics\MaterialFactory.h" />
     <ClInclude Include="src\Graphics\Model.h" />
+    <ClInclude Include="src\Graphics\Model_A.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\Macros.h" />
-    <ClInclude Include="src\Graphics\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Shaders\PixelShaderTest.hlsl">

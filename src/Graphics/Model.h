@@ -5,7 +5,7 @@
 class Model : public Direct3D11Drawable
 {
 public:
-	Model(Direct3D11Renderer& pd3dRenderer, std::shared_ptr<Mesh>& mesh, std::shared_ptr<Material>& material);
+	Model(Direct3D11Renderer& pd3dRenderer, std::shared_ptr<MeshData>& mesh, std::shared_ptr<Material>& material);
 
 	DirectX::XMMATRIX GetModelMatrix() override;
 	
