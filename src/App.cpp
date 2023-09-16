@@ -39,7 +39,7 @@ namespace engine::app
 
 			light.get()->Bind(pEngineWindow.get()->GetD3D11Renderer());
 
-			model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), pEngineWindow.get()->GetD3D11Renderer().GetCamera().get()->GetViewMatrix(), pEngineWindow.get()->GetD3D11Renderer().GetCamera().get()->GetProjectionMatrix(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+			model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
 			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
 		}

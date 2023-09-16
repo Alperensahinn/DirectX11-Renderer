@@ -21,10 +21,10 @@ Mesh::Mesh(Direct3D11Renderer& pd3dRenderer, std::shared_ptr<MeshData>& mesh, st
 {
 }
 
-void Mesh::Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraView, DirectX::XMMATRIX cameraProjection, DirectX::FXMMATRIX accumulatedTransform)
+void Mesh::Draw(Direct3D11Renderer& pd3dRenderer, DirectX::FXMMATRIX accumulatedTransform)
 {
 	DirectX::XMStoreFloat4x4(&transform, accumulatedTransform);
-	Direct3D11Drawable::Draw(pd3dRenderer, cameraView, cameraProjection);
+	Direct3D11Drawable::Draw(pd3dRenderer);
 }
 
 DirectX::XMMATRIX Mesh::GetModelMatrix()
@@ -37,18 +37,18 @@ Node::Node(std::vector<Mesh*> meshPtrs, DirectX::XMMATRIX transform) : meshPtrs(
 	DirectX::XMStoreFloat4x4(&this->transform, transform);
 }
 
-void Node::Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraView, DirectX::XMMATRIX cameraProjection, DirectX::FXMMATRIX accumulatedTransform)
+void Node::Draw(Direct3D11Renderer& pd3dRenderer, DirectX::FXMMATRIX accumulatedTransform)
 {
 	auto built = DirectX::XMLoadFloat4x4(&transform) * accumulatedTransform;
 
 	for (auto pm : meshPtrs)
 	{
-		pm->Draw(pd3dRenderer, cameraView, cameraProjection, built);
+		pm->Draw(pd3dRenderer, built);
 	}
 
 	for (auto& pc : childPtrs)
 	{
-		pc->Draw(pd3dRenderer, cameraView, cameraProjection, built);
+		pc->Draw(pd3dRenderer, built);
 	}
 }
 
@@ -219,9 +219,9 @@ std::unique_ptr<Node> Model::ParseNode(const aiNode& node)
 	return pNode;
 }
 
-void Model::Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraView, DirectX::XMMATRIX cameraProjection, float posX, float posY, float posZ, float scaleX, float scaleY, float scaleZ)
+void Model::Draw(Direct3D11Renderer& pd3dRenderer, float posX, float posY, float posZ, float scaleX, float scaleY, float scaleZ)
 {
-	pRoot->Draw(pd3dRenderer, cameraView, cameraProjection, DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0)
+	pRoot->Draw(pd3dRenderer, DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0)
 		* DirectX::XMMatrixScaling(scaleX, scaleY, scaleZ)
 		* DirectX::XMMatrixTranslation(posX, posY, posZ));
 }

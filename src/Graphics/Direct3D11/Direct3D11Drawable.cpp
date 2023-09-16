@@ -8,11 +8,11 @@ Direct3D11Drawable::Direct3D11Drawable(Direct3D11Renderer& pd3dRenderer, std::sh
 	pConstantBuffer = std::make_unique<Direct3D11ModelConstantBuffer>(pd3dRenderer, *this);
 }
 
-void Direct3D11Drawable::Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraView, DirectX::XMMATRIX cameraProjection)
+void Direct3D11Drawable::Draw(Direct3D11Renderer& pd3dRenderer)
 {
 	pMesh.get()->Bind(pd3dRenderer);
 	pMaterial.get()->Bind(pd3dRenderer);
-	pConstantBuffer.get()->Bind(pd3dRenderer, cameraView, cameraProjection);
+	pConstantBuffer.get()->Bind(pd3dRenderer);
 
 	pd3dRenderer.Draw(pMesh.get()->GetIndexCount());
 }

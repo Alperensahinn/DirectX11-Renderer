@@ -39,7 +39,7 @@ class Mesh : public Direct3D11Drawable
 public:
 	Mesh(Direct3D11Renderer& pd3dRenderer, std::shared_ptr<MeshData>& mesh, std::shared_ptr<Material>& material);
 	
-	void Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraView, DirectX::XMMATRIX cameraProjection, DirectX::FXMMATRIX accumulatedTransform);
+	void Draw(Direct3D11Renderer& pd3dRenderer, DirectX::FXMMATRIX accumulatedTransform);
 	DirectX::XMMATRIX GetModelMatrix() override;
 private:
 	DirectX::XMFLOAT4X4 transform;
@@ -53,7 +53,7 @@ class Node
 public: 
 	Node(std::vector<Mesh*> meshPtrs, DirectX::XMMATRIX transform);
 
-	void Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraView, DirectX::XMMATRIX cameraProjection, DirectX::FXMMATRIX accumulatedTransform);
+	void Draw(Direct3D11Renderer& pd3dRenderer, DirectX::FXMMATRIX accumulatedTransform);
 private:
 	void AddChild(std::unique_ptr<Node> pChild);
 private:
@@ -74,7 +74,7 @@ public:
 
 	std::unique_ptr<Node> ParseNode(const aiNode& node);
 
-	void Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraView, DirectX::XMMATRIX cameraProjection, float posX, float posY, float posZ, float scaleX, float scaleY, float scaleZ);
+	void Draw(Direct3D11Renderer& pd3dRenderer, float posX, float posY, float posZ, float scaleX, float scaleY, float scaleZ);
 private:
 	std::unique_ptr<Node> pRoot;
 	std::vector<std::shared_ptr<Mesh>> meshPtrs;
