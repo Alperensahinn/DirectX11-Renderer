@@ -14,7 +14,7 @@ public:
 		PixelShaderConstantBuffer
 	};
 
-	Direct3D11ConstantBuffer(Direct3D11Renderer d3dRenderer, std::unique_ptr<T>& bufferData, ConstantBufferType type, unsigned int slot) : type(type), slot(slot)
+	Direct3D11ConstantBuffer(Direct3D11Renderer& d3dRenderer, std::unique_ptr<T>& bufferData, ConstantBufferType type, unsigned int slot) : type(type), slot(slot)
 	{
 		CheckerToken chk = {};
 
@@ -32,7 +32,7 @@ public:
 		d3dRenderer.GetDevice()->CreateBuffer(&cbdesc, &cbdata, &pConstantBuffer) >> chk;
 	}
 
-	Direct3D11ConstantBuffer(Direct3D11Renderer d3dRenderer, ConstantBufferType type, unsigned int slot) : type(type), slot(slot)
+	Direct3D11ConstantBuffer(Direct3D11Renderer& d3dRenderer, ConstantBufferType type, unsigned int slot) : type(type), slot(slot)
 	{
 		CheckerToken chk = {};
 
@@ -47,7 +47,7 @@ public:
 		d3dRenderer.GetDevice()->CreateBuffer(&cbdesc, NULL, &pConstantBuffer) >> chk;
 	}
 
-	void UpdateData(Direct3D11Renderer d3dRenderer, std::unique_ptr<T>& bufferData)
+	void UpdateData(Direct3D11Renderer& d3dRenderer, std::unique_ptr<T>& bufferData)
 	{
 		CheckerToken chk = {};
 
@@ -58,7 +58,7 @@ public:
 		d3dRenderer.GetImmediateContext()->Unmap(pConstantBuffer.Get(), 0u);
 	}
 
-	void Bind(Direct3D11Renderer d3dRenderer)
+	void Bind(Direct3D11Renderer& d3dRenderer)
 	{
 		if (type == VertexShaderConstantBuffer)
 		{

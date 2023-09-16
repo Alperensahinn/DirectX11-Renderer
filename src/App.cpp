@@ -10,6 +10,8 @@ namespace engine::app
 		pEngineWindow = std::make_unique<engine::window::EngineWindow>();
 
 		camera = std::make_unique<Camera>(0.0f, 0.0f, -5.0f);
+		light = std::make_unique<Light>(pEngineWindow.get()->GetD3D11Renderer());
+
 
 		model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\Sponza\\sponza.obj", "Resources\\Sponza\\");
 
@@ -36,7 +38,9 @@ namespace engine::app
 			//draw calls
 			pEngineWindow.get()->GetD3D11Renderer().StartFrame();
 
-			model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), camera.get()->GetViewProjection(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+			light.get()->Bind(pEngineWindow.get()->GetD3D11Renderer());
+
+			model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), camera.get()->GetViewMatrix(), camera.get()->GetProjectionMatrix(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
 			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
 		}

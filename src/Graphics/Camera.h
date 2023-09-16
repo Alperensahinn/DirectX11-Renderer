@@ -12,8 +12,10 @@ public:
 
 	void Update(GLFWwindow* window, float deltaTime);
 
+	DirectX::XMVECTOR GetPosition();
+
 	DirectX::XMMATRIX GetViewMatrix();
-	DirectX::XMMATRIX GetViewProjection();
+	DirectX::XMMATRIX GetProjectionMatrix();
 private:
 	void MoveCamera(GLFWwindow* window, float deltaTime);
 	void RotateCamera();

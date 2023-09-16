@@ -1,8 +1,9 @@
 #pragma once
+
+#include "DxgiInfoManager.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl.h>
-#include "DxgiInfoManager.h"
 
 class Direct3D11Renderer
 {
@@ -14,6 +15,8 @@ public:
 	void Draw(unsigned int indexCount);
 	void StartFrame();
 	void EndFrame();
+
+
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device> pd3dDevice;

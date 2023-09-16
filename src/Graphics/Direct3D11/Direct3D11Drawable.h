@@ -11,7 +11,7 @@ class Direct3D11Drawable
 public:
 	Direct3D11Drawable(Direct3D11Renderer& pd3dRenderer, std::shared_ptr<MeshData>& mesh, std::shared_ptr<Material>& material);
 
-	void Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraMatrix);
+	void Draw(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX cameraView, DirectX::XMMATRIX cameraProjection);
 	virtual DirectX::XMMATRIX GetModelMatrix() = 0;
 protected:
 	std::shared_ptr<MeshData> pMesh;

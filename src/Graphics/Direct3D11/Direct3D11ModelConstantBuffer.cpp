@@ -9,12 +9,13 @@ Direct3D11ModelConstantBuffer::Direct3D11ModelConstantBuffer(Direct3D11Renderer&
 	);
 }
 
-void Direct3D11ModelConstantBuffer::Bind(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX viewProjection)
+void Direct3D11ModelConstantBuffer::Bind(Direct3D11Renderer& pd3dRenderer, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 {
 	pConstantBuffer.get()->Bind(pd3dRenderer);
 
 	std::unique_ptr<ModelConstantBuffer> cbData = std::make_unique<ModelConstantBuffer>();
-	cbData.get()->modelViewPorjection = DirectX::XMMatrixTranspose(drawable.GetModelMatrix() * viewProjection);
+	cbData.get()->modelViewPorjection = DirectX::XMMatrixTranspose(drawable.GetModelMatrix() * (view * projection));
+	cbData.get()->model = DirectX::XMMatrixTranspose(drawable.GetModelMatrix());
 
 	pConstantBuffer.get()->UpdateData(pd3dRenderer, cbData);
 }
