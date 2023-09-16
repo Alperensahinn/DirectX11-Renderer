@@ -3,8 +3,6 @@
 #include <DirectXMath.h>
 #include "..\..\Libraries\include\GLFW\glfw3.h"
 
-class EngineWindow;
-
 class Camera
 {
 public:

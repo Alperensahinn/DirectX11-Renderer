@@ -1,9 +1,11 @@
 #pragma once
 
 #include "DxgiInfoManager.h"
+#include "..\Camera.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl.h>
+#include <memory>
 
 class Direct3D11Renderer
 {
@@ -16,7 +18,7 @@ public:
 	void StartFrame();
 	void EndFrame();
 
-
+	std::unique_ptr<Camera>& GetCamera();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device> pd3dDevice;
@@ -25,4 +27,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView;
 private:
 	DxgiInfoManager infoManager;
+	std::unique_ptr<Camera> camera;
 };

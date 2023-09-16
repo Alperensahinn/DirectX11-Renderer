@@ -1,7 +1,6 @@
 #pragma once
 #include "EngineWindow.h"
 #include "Graphics\Direct3D11\Direct3D11Drawable.h"
-#include "Graphics\Camera.h"
 #include "Graphics\Light.h"
 
 #include "Graphics\Model.h"
@@ -19,7 +18,6 @@ namespace engine::app
 	private:
 		std::unique_ptr<engine::window::EngineWindow> pEngineWindow;
 
-		std::unique_ptr<Camera> camera;
 		std::unique_ptr<Light> light;
 
 		std::unique_ptr<Model> model_a;

@@ -99,6 +99,9 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 	CHECK_INFOQUEUE( pImmediateContext->RSSetViewports(1, &vp) );
 
 	CHECK_INFOQUEUE( pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) );
+
+	//camera test
+	camera = std::make_unique<Camera>(0.0f, 0.0f, 0.0f);
 }
 
 ID3D11Device* Direct3D11Renderer::GetDevice()
@@ -127,5 +130,10 @@ void Direct3D11Renderer::EndFrame()
 {
 	CheckerToken chk = {};
 	pSwapChain->Present(1u, 0) >> chk;
+}
+
+std::unique_ptr<Camera>& Direct3D11Renderer::GetCamera()
+{
+	return camera;
 }
 
