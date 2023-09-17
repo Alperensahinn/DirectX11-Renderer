@@ -5,10 +5,10 @@ Light::Light(Direct3D11Renderer& d3dRenderer)
 {
 	lightData = std::make_unique<LightData>();
 
+	DirectX::XMFLOAT4 dir = DirectX::XMFLOAT4(-1.0f, -1.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT4 color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	DirectX::XMFLOAT4 pos = DirectX::XMFLOAT4(0.0f, 2.0f, 0.0f, 1.0f);
 
-	lightData.get()->Position = DirectX::XMLoadFloat4(&pos);
+	lightData.get()->Direction = DirectX::XMLoadFloat4(&dir);
 	lightData.get()->Color = DirectX::XMLoadFloat4(&color);
 
 	pLightConstant = std::make_unique<Direct3D11ConstantBuffer<LightData>>

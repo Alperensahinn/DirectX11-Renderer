@@ -7,7 +7,7 @@ class Light
 {
 	typedef struct LightData
 	{
-		DirectX::XMVECTOR Position;
+		DirectX::XMVECTOR Direction;
 		DirectX::XMVECTOR Color;
 	};
 

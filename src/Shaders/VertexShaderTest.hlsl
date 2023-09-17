@@ -2,7 +2,7 @@ cbuffer transformBuffer : register(b0)
 {
     matrix modelViewProjection;
     matrix model;
-    float4 view;
+    float4 cameraPos;
 };
 
 struct VSOut
@@ -19,7 +19,7 @@ VSOut main( float3 pos : Position, float3 normal : Normal, float2 texCoord : Tex
     VSOut vso;
     
     vso.fragPos = mul(float4(pos, 1.0f), model);
-    vso.viewPos = view;
+    vso.viewPos = cameraPos;
     vso.fragmentNormal = normal;
     vso.pos = mul(float4(pos, 1.0f), modelViewProjection);
     vso.texCoord = texCoord;
