@@ -101,7 +101,7 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 	CHECK_INFOQUEUE( pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) );
 
 	//camera test
-	camera = std::make_unique<Camera>(0.0f, 0.0f, 0.0f);
+	camera = std::make_unique<Camera>(0.0f, 5.0f, -5.0f);
 }
 
 ID3D11Device* Direct3D11Renderer::GetDevice()

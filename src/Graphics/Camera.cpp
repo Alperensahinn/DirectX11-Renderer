@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "..\Input.h"
 
+#include <iostream>
+
 Camera::Camera(float pos_x, float pos_y, float pos_z) : cameraSpeed(0.05), firstMouse(true)
 {
 	DirectX::XMFLOAT4 tmp_pos = DirectX::XMFLOAT4(pos_x, pos_y, pos_z, 1.0f);

@@ -5,7 +5,7 @@ Light::Light(Direct3D11Renderer& d3dRenderer)
 {
 	lightData = std::make_unique<LightData>();
 
-	DirectX::XMFLOAT4 dir = DirectX::XMFLOAT4(-1.0f, -1.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT4 dir = DirectX::XMFLOAT4(-1.0f, -1.0f, 1.0f, 1.0f);
 	DirectX::XMFLOAT4 color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	lightData.get()->Direction = DirectX::XMLoadFloat4(&dir);
