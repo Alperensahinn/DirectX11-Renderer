@@ -33,7 +33,7 @@ float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, fl
     float3 specular = specularStrength * spec * lightColor;
     
     //ambient light
-    float ambientStrength = 0.1f;
+    float ambientStrength = 0.2f;
     float3 ambient = ambientStrength * lightColor;
     
     return float4((specular + ambient + diffuse), 1.0f) * textureColor;
