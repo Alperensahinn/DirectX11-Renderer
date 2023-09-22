@@ -103,7 +103,7 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh&
 		}
 		else
 		{
-			albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, "Resources\\Textures\\FatihChan.png", 1u);
+			albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, "Resources\\Textures\\Default_Albedo.png", 1u);
 		}
 
 		/*
@@ -138,7 +138,7 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh&
 
 	else
 	{
-		albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, "Resources\\Textures\\FatihChan.png", 0u);
+		albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, "Resources\\Textures\\Default_Albedo.png", 0u);
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Diffuse.png", 0u));
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Normal.png", 1u));
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Specular.png", 2u));

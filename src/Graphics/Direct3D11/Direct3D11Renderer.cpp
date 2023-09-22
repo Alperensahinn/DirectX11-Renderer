@@ -169,8 +169,6 @@ void Direct3D11Renderer::ShadowPass(unsigned int indexCount)
 	pVertexShader.get()->Bind(*this);
 	pPixelShader.get()->Bind(*this);
 
-	BindLightSpaceMatrix();
-
 	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
 }
 
@@ -192,43 +190,10 @@ void Direct3D11Renderer::LambertianPass(unsigned int indexCount)
 
 	CHECK_INFOQUEUE(pImmediateContext->PSSetShaderResources(0u, 1u, pShadowTextureView.GetAddressOf()));
 
-	BindLightSpaceMatrix();
-
 	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pSRV = NULL;
 	pImmediateContext->PSSetShaderResources(0, 1, pSRV.GetAddressOf());
-}
-
-void Direct3D11Renderer::BindLightSpaceMatrix()
-{
-	float near_plane = 1.0f, far_plane = 20.0f;
-
-	DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(20.0f, 20.0f, near_plane, far_plane);
-
-	DirectX::XMFLOAT4 eyePos = DirectX::XMFLOAT4(-2.0f, 4.0f, -1.0f, 1.0f);
-	DirectX::XMFLOAT4 focusPos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT4 upDir = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-
-	DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH
-	(
-		DirectX::XMLoadFloat4(&eyePos),
-		DirectX::XMLoadFloat4(&focusPos),
-		DirectX::XMLoadFloat4(&upDir)
-	);
-
-	DirectX::XMMATRIX lightSpaceMatrix = DirectX::XMMatrixTranspose(lightView * lightProjection);
-
-	typedef struct ShadowCBuff
-	{
-		DirectX::XMMATRIX lightSpaceMatrix;
-	};
-
-	std::unique_ptr<ShadowCBuff> data = std::make_unique<ShadowCBuff>();
-	data.get()->lightSpaceMatrix = lightSpaceMatrix;
-
-	std::unique_ptr<Direct3D11ConstantBuffer<ShadowCBuff>> scbuff = std::make_unique<Direct3D11ConstantBuffer<ShadowCBuff>>(*this, data, Direct3D11ConstantBuffer<ShadowCBuff>::VertexShaderConstantBuffer, 1u);
-	scbuff.get()->Bind(*this);
 }
 
 

@@ -2,6 +2,7 @@ cbuffer lightBuffer : register(b0)
 {
     float4 lightDirection;
     float4 lightColor;
+    matrix lightSpaceMatrix;
 };
 
 Texture2D shadowMap : register(t0);
