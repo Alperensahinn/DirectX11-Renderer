@@ -16,7 +16,11 @@ public:
 	ID3D11DeviceContext* GetImmediateContext();
 	void Draw(unsigned int indexCount);
 
-	void RenderShadows();
+
+	void ShadowPass(unsigned int indexCount);
+	void LambertianPass(unsigned int indexCount);
+
+	void BindLightSpaceMatrix();
 
 	void StartFrame();
 	void EndFrame();

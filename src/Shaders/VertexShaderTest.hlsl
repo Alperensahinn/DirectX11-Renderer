@@ -5,11 +5,16 @@ cbuffer transformBuffer : register(b0)
     float4 cameraPos;
 };
 
+cbuffer shadowBuffer : register(b1)
+{
+    matrix lightSpaceMatrix;
+};
 
 struct VSOut
 {
     float3 fragPos : FragmentPosition;
     float3 viewPos : ViewPosition;
+    float4 fragPosLightSpace : FragmentPositionLightSpace;
     float3 fragmentNormal : Normal;
     float2 texCoord : TexCoord;
     float4 pos : SV_POSITION;
@@ -18,6 +23,10 @@ struct VSOut
 VSOut main( float3 pos : Position, float3 normal : Normal, float2 texCoord : TexCoord )
 {
     VSOut vso;
+    
+    float4 f = mul(float4(pos, 1.0f), model);
+    f = mul(f, lightSpaceMatrix);
+    vso.fragPosLightSpace = f;
     
     vso.fragPos = mul(float4(pos, 1.0f), model).xyz;
     vso.viewPos = cameraPos.xyz;

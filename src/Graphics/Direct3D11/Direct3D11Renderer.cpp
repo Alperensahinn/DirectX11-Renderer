@@ -71,7 +71,7 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 	dtdesc.Height = engine::window::windowHeight;
 	dtdesc.MipLevels = 1u;
 	dtdesc.ArraySize = 1u;
-	dtdesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dtdesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dtdesc.SampleDesc.Count = 1u;
 	dtdesc.SampleDesc.Quality = 0u;
 	dtdesc.Usage = D3D11_USAGE_DEFAULT;
@@ -80,7 +80,7 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 	pd3dDevice->CreateTexture2D(&dtdesc, NULL, &pDepthTexture) >> chk;
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvdesc = {};
-	dsvdesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsvdesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvdesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
 	pd3dDevice->CreateDepthStencilView(pDepthTexture.Get(), &dsvdesc, &pDepthStencilView) >> chk;
@@ -117,23 +117,7 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 
 	pd3dDevice->CreateShaderResourceView(pShadowDepthTexture.Get(), &shadowViewDesc, pShadowTextureView.GetAddressOf()) >> chk;
 
-
-
-
-	//pShadowTexture2D
-
 	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pShadowDepthView.Get()));
-
-
-
-
-
-
-
-
-
-
-
 
 
 	// Setup the viewport
@@ -165,42 +149,19 @@ ID3D11DeviceContext* Direct3D11Renderer::GetImmediateContext()
 
 void Direct3D11Renderer::Draw(unsigned int indexCount)
 {
-	CheckerToken chk = {};
-
-	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
-
-	if(drawMode == 0)
-	{
-		CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
-		CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pShadowDepthView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
-
-		CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pShadowDepthView.Get()));
-
-		RenderShadows();
-		CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
-	}
-
-	else if(drawMode == 1)
-	{
-		CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
-		CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0));
-
-		CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get()));
-
-		CHECK_INFOQUEUE(pImmediateContext->PSSetShaderResources(0u, 1u, pShadowTextureView.GetAddressOf()))
-
-		CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
-
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pSRV = NULL;
-		pImmediateContext->PSSetShaderResources(0, 1, pSRV.GetAddressOf());
-	}
+	ShadowPass(indexCount);
+	LambertianPass(indexCount);
 }
 
-void Direct3D11Renderer::RenderShadows()
+void Direct3D11Renderer::ShadowPass(unsigned int indexCount)
 {
-	//CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pShadowDepthView.Get()));
+	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
 
-	CheckerToken chk = {};
+	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pShadowDepthView.Get()));
+
+	CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
+	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
+	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pShadowDepthView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 
 	std::unique_ptr<Direct3D11VertexShader> pVertexShader = std::make_unique<Direct3D11VertexShader>(*this, "x64\\Debug\\VS_Shadow.cso");
 	std::unique_ptr<Direct3D11PixelShader> pPixelShader = std::make_unique<Direct3D11PixelShader>(*this, "x64\\Debug\\PS_Shadow.cso");
@@ -208,12 +169,42 @@ void Direct3D11Renderer::RenderShadows()
 	pVertexShader.get()->Bind(*this);
 	pPixelShader.get()->Bind(*this);
 
+	BindLightSpaceMatrix();
 
+	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
+}
+
+void Direct3D11Renderer::LambertianPass(unsigned int indexCount)
+{
+	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get()));
+
+	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
+
+	CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
+	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
+	//CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pShadowDepthView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
+
+	std::unique_ptr<Direct3D11VertexShader> pVertexShader = std::make_unique<Direct3D11VertexShader>(*this, "x64\\Debug\\VertexShaderTest.cso");
+	std::unique_ptr<Direct3D11PixelShader> pPixelShader = std::make_unique<Direct3D11PixelShader>(*this, "x64\\Debug\\PixelShaderTest.cso");
+
+	pVertexShader.get()->Bind(*this);
+	pPixelShader.get()->Bind(*this);
+
+	CHECK_INFOQUEUE(pImmediateContext->PSSetShaderResources(0u, 1u, pShadowTextureView.GetAddressOf()));
+
+	BindLightSpaceMatrix();
+
+	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pSRV = NULL;
+	pImmediateContext->PSSetShaderResources(0, 1, pSRV.GetAddressOf());
+}
+
+void Direct3D11Renderer::BindLightSpaceMatrix()
+{
 	float near_plane = 1.0f, far_plane = 20.0f;
 
 	DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(20.0f, 20.0f, near_plane, far_plane);
-	//glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-
 
 	DirectX::XMFLOAT4 eyePos = DirectX::XMFLOAT4(-2.0f, 4.0f, -1.0f, 1.0f);
 	DirectX::XMFLOAT4 focusPos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -227,12 +218,6 @@ void Direct3D11Renderer::RenderShadows()
 	);
 
 	DirectX::XMMATRIX lightSpaceMatrix = DirectX::XMMatrixTranspose(lightView * lightProjection);
-
-	/*
-	glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
-	*/
 
 	typedef struct ShadowCBuff
 	{

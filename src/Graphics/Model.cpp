@@ -103,7 +103,7 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh&
 		}
 		else
 		{
-			albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, "Resources\\Textures\\FatihChan.png", 0u);
+			albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, "Resources\\Textures\\FatihChan.png", 1u);
 		}
 
 		/*

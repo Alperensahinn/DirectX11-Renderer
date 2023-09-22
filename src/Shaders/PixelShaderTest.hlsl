@@ -4,11 +4,26 @@ cbuffer lightBuffer : register(b0)
     float4 lightColor;
 };
 
-Texture2D diffuseTex : register(t0);
+Texture2D shadowMap : register(t0);
+Texture2D diffuseTex : register(t1);
 
 SamplerState smplr;
 
-float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, float3 fragmentNormal : Normal, float2 texCoord : TexCoord) : SV_TARGET
+float ShadowCalculation(float4 fragPosLightSpace, float3 normal, float3 lightDir)
+{
+    float4 projCoords = fragPosLightSpace * float4(0.5f, -0.5f, 1.0f, 1.0f) + float4(0.5f, 0.5f, 0.0f, 1.0f);
+    
+    float closestDepth = shadowMap.Sample(smplr, projCoords.xy).r;
+
+    float currentDepth = projCoords.z;
+
+    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
+}
+
+float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, float4 fragPosLightSpace : FragmentPositionLightSpace, float3 fragmentNormal : Normal, float2 texCoord : TexCoord) : SV_TARGET
 {
     //sample texture
     float4 textureColor = diffuseTex.Sample(smplr, texCoord);
@@ -36,6 +51,12 @@ float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, fl
     float ambientStrength = 0.2f;
     float3 ambient = ambientStrength * lightColor;
     
-    //return float4((specular + ambient + diffuse), 1.0f) * textureColor;
-    return float4(textureColor.r, textureColor.r, textureColor.r, 1.0f);
+    // calculate shadow
+    float shadow = ShadowCalculation(fragPosLightSpace, normal, lightDir);
+    float3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular));
+    
+    //float3 lighting = (ambient + diffuse + specular);
+    
+    return float4(lighting, 1.0f) * textureColor;
+    //return float4(shadow.r, shadow.r, shadow.r, 1.0f); //shadow map debug
 }

@@ -18,8 +18,6 @@ namespace engine::app
 
 	void App::Run()
 	{
-		float rotateAround = 0.0f;
-
 		while (!glfwWindowShouldClose(&pEngineWindow.get()->GetGLFWWindow()))
 		{
 			float currentFrame = glfwGetTime();
@@ -30,24 +28,6 @@ namespace engine::app
 
 			pEngineWindow.get()->GetD3D11Renderer().GetCamera()->Update(&pEngineWindow.get()->GetGLFWWindow(), deltaTime);
 
-
-			rotateAround += 0.5f;
-
-			if (rotateAround > 360.f) rotateAround = 0.0f;
-
-
-			pEngineWindow.get()->GetD3D11Renderer().drawMode = 0;
-			//draw calls
-			pEngineWindow.get()->GetD3D11Renderer().StartFrame();
-
-			light.get()->Bind(pEngineWindow.get()->GetD3D11Renderer());
-
-			model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
-
-			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
-
-			pEngineWindow.get()->GetD3D11Renderer().drawMode = 1;
-			//draw calls
 			pEngineWindow.get()->GetD3D11Renderer().StartFrame();
 
 			light.get()->Bind(pEngineWindow.get()->GetD3D11Renderer());
