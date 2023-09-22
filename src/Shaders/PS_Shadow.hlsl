@@ -10,6 +10,8 @@ SamplerState smplr;
 
 float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, float3 fragmentNormal : Normal, float2 texCoord : TexCoord) : SV_TARGET
 {
+    //float depthValue = depthMap.Sample(smplr, texCoord).r;
+    
     //sample texture
     float4 textureColor = diffuseTex.Sample(smplr, texCoord);
     
@@ -36,6 +38,8 @@ float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, fl
     float ambientStrength = 0.2f;
     float3 ambient = ambientStrength * lightColor;
     
-    //return float4((specular + ambient + diffuse), 1.0f) * textureColor;
-    return float4(textureColor.r, textureColor.r, textureColor.r, 1.0f);
+    return float4((specular + ambient + diffuse), 1.0f) * textureColor;
+    
+    
+    //return float4(0.5, 0.5, 0.5, 1.0);
 }

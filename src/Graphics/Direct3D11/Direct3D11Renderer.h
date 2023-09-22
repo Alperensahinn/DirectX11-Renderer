@@ -15,16 +15,24 @@ public:
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetImmediateContext();
 	void Draw(unsigned int indexCount);
+
+	void RenderShadows();
+
 	void StartFrame();
 	void EndFrame();
 
 	std::unique_ptr<Camera>& GetCamera();
+
+	bool drawMode = 0;
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device> pd3dDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pImmediateContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView;
+
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pShadowDepthView;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pShadowTextureView;
 private:
 	DxgiInfoManager infoManager;
 	std::unique_ptr<Camera> camera;
