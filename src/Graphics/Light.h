@@ -17,9 +17,10 @@ public:
 
 	void Bind(Direct3D11Renderer& d3dRenderer);
 private:
-	void CalculateLightSpaceMatrix();
+	void CalculateLightData();
 
 private:
 	std::unique_ptr<LightData> lightData;
-	std::unique_ptr<Direct3D11ConstantBuffer<LightData>> pLightConstant;
+	std::unique_ptr<Direct3D11ConstantBuffer<LightData>> pLightConstantPS;
+	std::unique_ptr<Direct3D11ConstantBuffer<LightData>> pLightConstantVS;
 };

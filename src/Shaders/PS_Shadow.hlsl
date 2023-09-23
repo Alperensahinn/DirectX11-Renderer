@@ -1,7 +1,8 @@
-cbuffer lightBuffer : register(b0)
+cbuffer lightBuffer : register(b1)
 {
     float4 lightDirection;
     float4 lightColor;
+    matrix lightSpaceMatrix;
 };
 
 Texture2D diffuseTex : register(t0);

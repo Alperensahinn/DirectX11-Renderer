@@ -5,8 +5,10 @@ cbuffer transformBuffer : register(b0)
     float4 cameraPos;
 };
 
-cbuffer shadowBuffer : register(b1)
+cbuffer lightBuffer : register(b1)
 {
+    float4 lightDirection;
+    float4 lightColor;
     matrix lightSpaceMatrix;
 };
 

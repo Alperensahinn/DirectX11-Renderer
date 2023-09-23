@@ -5,19 +5,29 @@ Light::Light(Direct3D11Renderer& d3dRenderer)
 {
 	lightData = std::make_unique<LightData>();
 
-	DirectX::XMFLOAT4 dir = DirectX::XMFLOAT4(-1.0f, -1.0f, 1.0f, 1.0f);
-	DirectX::XMFLOAT4 color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	CalculateLightData();
 
-	lightData.get()->Direction = DirectX::XMLoadFloat4(&dir);
-	lightData.get()->Color = DirectX::XMLoadFloat4(&color);
-
-	pLightConstant = std::make_unique<Direct3D11ConstantBuffer<LightData>>
+	pLightConstantPS = std::make_unique<Direct3D11ConstantBuffer<LightData>>
 		(
-			d3dRenderer, Direct3D11ConstantBuffer<LightData>::ConstantBufferType::PixelShaderConstantBuffer, 0u
+			d3dRenderer, Direct3D11ConstantBuffer<LightData>::ConstantBufferType::PixelShaderConstantBuffer, 1u
+		);
+
+	pLightConstantVS = std::make_unique<Direct3D11ConstantBuffer<LightData>>
+		(
+			d3dRenderer, Direct3D11ConstantBuffer<LightData>::ConstantBufferType::VertexShaderConstantBuffer, 1u
 		);
 }
 
 void Light::Bind(Direct3D11Renderer& d3dRenderer)
+{
+	pLightConstantPS.get()->Bind(d3dRenderer);
+	pLightConstantPS.get()->UpdateData(d3dRenderer, lightData);
+
+	pLightConstantVS.get()->Bind(d3dRenderer);
+	pLightConstantVS.get()->UpdateData(d3dRenderer, lightData);
+}
+
+void Light::CalculateLightData()
 {
 	float near_plane = 1.0f, far_plane = 20.0f;
 
@@ -36,29 +46,13 @@ void Light::Bind(Direct3D11Renderer& d3dRenderer)
 
 	DirectX::XMMATRIX lightSpaceMatrix = DirectX::XMMatrixTranspose(lightView * lightProjection);
 
-	typedef struct ShadowCBuff
-	{
-		DirectX::XMMATRIX lightSpaceMatrix;
-	};
-
-	std::unique_ptr<ShadowCBuff> data = std::make_unique<ShadowCBuff>();
-	data.get()->lightSpaceMatrix = lightSpaceMatrix;
-
-	std::unique_ptr<Direct3D11ConstantBuffer<ShadowCBuff>> scbuff = std::make_unique<Direct3D11ConstantBuffer<ShadowCBuff>>(d3dRenderer, data, Direct3D11ConstantBuffer<ShadowCBuff>::VertexShaderConstantBuffer, 1u);
-	scbuff.get()->Bind(d3dRenderer);
-	
-	DirectX::XMVECTOR v1 = DirectX::XMLoadFloat4(&eyePos);
-	DirectX::XMVECTOR v2 = DirectX::XMLoadFloat4(&focusPos);
-
-	DirectX::XMVECTOR lightDir = DirectX::XMVectorSubtract(v2, v1);
+	DirectX::XMVECTOR lightDir = DirectX::XMVectorSubtract(DirectX::XMLoadFloat4(&focusPos), DirectX::XMLoadFloat4(&eyePos));
 
 	lightData.get()->Direction = lightDir;
+	lightData.get()->lightSpaceMatrix = lightSpaceMatrix;
 
-	pLightConstant.get()->Bind(d3dRenderer);
-	pLightConstant.get()->UpdateData(d3dRenderer, lightData);
-}
+	DirectX::XMFLOAT4 color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	lightData.get()->Color = DirectX::XMLoadFloat4(&color);
 
-void Light::CalculateLightSpaceMatrix()
-{
 }
 

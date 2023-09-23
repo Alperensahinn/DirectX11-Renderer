@@ -12,6 +12,9 @@
 
 #include "Direct3D11ConstantBuffer.h"
 
+#include "Direct3D11ResourceMap.h"
+#include "..\ShadowMapPass.h"
+
 #include "..\Model.h"
 
 #pragma comment(lib, "d3d11.lib")
@@ -133,8 +136,18 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 
 	CHECK_INFOQUEUE( pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) );
 
+	pResourceMap = new Direct3D11ResourceMap();
+	pShadowMapPass = new ShadowMapPass(*this);
+
 	//camera test
 	camera = std::make_unique<Camera>(0.0f, 5.0f, -5.0f);
+
+}
+
+Direct3D11Renderer::~Direct3D11Renderer()
+{
+	delete pResourceMap;
+	delete pShadowMapPass;
 }
 
 ID3D11Device* Direct3D11Renderer::GetDevice()
@@ -149,41 +162,40 @@ ID3D11DeviceContext* Direct3D11Renderer::GetImmediateContext()
 
 void Direct3D11Renderer::Draw(unsigned int indexCount)
 {
-	ShadowPass(indexCount);
-	LambertianPass(indexCount);
+	if(drawMode == 0)
+	{
+		pShadowMapPass->SetResources(*this);
+		CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
+	}
+	
+	else if (drawMode == 1)
+	{
+		LambertianPass(indexCount);
+	}
 }
 
 void Direct3D11Renderer::ShadowPass(unsigned int indexCount)
 {
 	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
 
+
+
+
+
 	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pShadowDepthView.Get()));
-
-	CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
-	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pShadowDepthView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
-
-	std::unique_ptr<Direct3D11VertexShader> pVertexShader = std::make_unique<Direct3D11VertexShader>(*this, "x64\\Debug\\VS_Shadow.cso");
-	std::unique_ptr<Direct3D11PixelShader> pPixelShader = std::make_unique<Direct3D11PixelShader>(*this, "x64\\Debug\\PS_Shadow.cso");
-
-	pVertexShader.get()->Bind(*this);
-	pPixelShader.get()->Bind(*this);
-
-	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
 }
 
 void Direct3D11Renderer::LambertianPass(unsigned int indexCount)
 {
-	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get()));
-
 	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
 
+	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get()));
 	CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
 	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
-	//CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pShadowDepthView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 
-	std::unique_ptr<Direct3D11VertexShader> pVertexShader = std::make_unique<Direct3D11VertexShader>(*this, "x64\\Debug\\VertexShaderTest.cso");
-	std::unique_ptr<Direct3D11PixelShader> pPixelShader = std::make_unique<Direct3D11PixelShader>(*this, "x64\\Debug\\PixelShaderTest.cso");
+	std::shared_ptr<Direct3D11VertexShader> pVertexShader = pResourceMap->GetD3D11VertexShader(*this, "x64\\Debug\\VertexShaderTest.cso");
+	std::shared_ptr<Direct3D11PixelShader> pPixelShader = pResourceMap->GetD3D11PixelShader(*this, "x64\\Debug\\PixelShaderTest.cso");
 
 	pVertexShader.get()->Bind(*this);
 	pPixelShader.get()->Bind(*this);
@@ -195,7 +207,6 @@ void Direct3D11Renderer::LambertianPass(unsigned int indexCount)
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pSRV = NULL;
 	pImmediateContext->PSSetShaderResources(0, 1, pSRV.GetAddressOf());
 }
-
 
 void Direct3D11Renderer::StartFrame()
 {
@@ -211,6 +222,16 @@ void Direct3D11Renderer::EndFrame()
 {
 	CheckerToken chk = {};
 	pSwapChain->Present(1u, 0) >> chk;
+}
+
+Direct3D11ResourceMap& Direct3D11Renderer::GetResourceMap()
+{
+	return *pResourceMap;
+}
+
+ShadowMapPass& Direct3D11Renderer::GetShadowMapPass()
+{
+	return *pShadowMapPass;
 }
 
 std::unique_ptr<Camera>& Direct3D11Renderer::GetCamera()

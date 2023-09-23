@@ -1,4 +1,4 @@
-cbuffer lightBuffer : register(b0)
+cbuffer lightBuffer : register(b1)
 {
     float4 lightDirection;
     float4 lightColor;
@@ -56,8 +56,6 @@ float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, fl
     float shadow = ShadowCalculation(fragPosLightSpace, normal, lightDir);
     float3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular));
     
-    //float3 lighting = (ambient + diffuse + specular);
-    
     return float4(lighting, 1.0f) * textureColor;
-    //return float4(shadow.r, shadow.r, shadow.r, 1.0f); //shadow map debug
+
 }

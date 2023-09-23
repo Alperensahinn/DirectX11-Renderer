@@ -20,6 +20,6 @@ namespace engine::app
 
 		std::unique_ptr<Light> light;
 
-		std::unique_ptr<Model> model_a;
+		std::shared_ptr<Model> model_a;
 	};
 }

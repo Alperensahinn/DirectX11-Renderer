@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "Direct3D11\Direct3D11ResourceMap.h"
 
 MeshData::MeshData(Direct3D11Renderer & pd3dRenderer, std::vector<Vertex>&vertices, std::vector<unsigned int>&indices)
 {
@@ -57,7 +58,7 @@ void Node::AddChild(std::unique_ptr<Node> pChild)
 	childPtrs.push_back(std::move(pChild));
 }
 
-Model::Model(Direct3D11Renderer& pd3dRenderer, std::string fileName, std::string folderPath)
+Model::Model(Direct3D11Renderer& d3dRenderer, std::string fileName, std::string folderPath)
 {
 	Assimp::Importer importer;
 	auto pScene = importer.ReadFile(fileName.c_str(),
@@ -68,13 +69,13 @@ Model::Model(Direct3D11Renderer& pd3dRenderer, std::string fileName, std::string
 
 	for (size_t i = 0; i < pScene->mNumMeshes; i++)
 	{
-		meshPtrs.push_back(ParseMesh(pd3dRenderer, *pScene->mMeshes[i], pScene->mMaterials, folderPath, i));
+		meshPtrs.push_back(ParseMesh(d3dRenderer, *pScene->mMeshes[i], pScene->mMaterials, folderPath, i));
 	}
 
 	pRoot = ParseNode(*pScene->mRootNode);
 }
 
-std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh& mesh, const aiMaterial* const* pMaterials, std::string folderPath, int index)
+std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& d3dRenderer, aiMesh& mesh, const aiMaterial* const* pMaterials, std::string folderPath, int index)
 {
 	std::shared_ptr<Direct3D11Texture2D> albedoTexture;
 	std::shared_ptr<Direct3D11SamplerState> samplerState;
@@ -99,11 +100,11 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh&
 			filePath = folderPath + filePath;
 
 
-			albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, filePath, 0u);
+			albedoTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, filePath, 0u);
 		}
 		else
 		{
-			albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, "Resources\\Textures\\Default_Albedo.png", 1u);
+			albedoTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, "Resources\\Textures\\Default_Albedo.png", 1u);
 		}
 
 		/*
@@ -133,16 +134,16 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh&
 		}
 		*/
 
-		samplerState = std::make_shared<Direct3D11SamplerState>(pd3dRenderer);
+		samplerState = std::make_shared<Direct3D11SamplerState>(d3dRenderer);
 	}
 
 	else
 	{
-		albedoTexture = std::make_shared<Direct3D11Texture2D>(pd3dRenderer, "Resources\\Textures\\Default_Albedo.png", 0u);
+		albedoTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, "Resources\\Textures\\Default_Albedo.png", 0u);
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Diffuse.png", 0u));
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Normal.png", 1u));
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Specular.png", 2u));
-		samplerState = std::make_shared<Direct3D11SamplerState>(pd3dRenderer);
+		samplerState = std::make_shared<Direct3D11SamplerState>(d3dRenderer);
 	}
 
 	std::vector<Vertex> vertices;
@@ -169,10 +170,11 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh&
 		indices.push_back(mesh.mFaces[i].mIndices[2]);
 	}
 
-	std::shared_ptr<MeshData> meshData = std::make_shared<MeshData>(pd3dRenderer, vertices, indices);
+	std::shared_ptr<MeshData> meshData = std::make_shared<MeshData>(d3dRenderer, vertices, indices);
 
 	//shaders
-	vertexShader = std::make_shared<Direct3D11VertexShader>(pd3dRenderer, "x64\\Debug\\VertexShaderTest.cso");
+	vertexShader = d3dRenderer.GetResourceMap().GetD3D11VertexShader(d3dRenderer, "x64\\Debug\\VertexShaderTest.cso");
+	
 	std::vector<D3D11_INPUT_ELEMENT_DESC> ied;
 	ied.push_back({ "Position", 0u,  DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u });
 	ied.push_back({ "Normal", 0u,  DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u });
@@ -180,9 +182,9 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh&
 	ied.push_back({ "Bitangent", 0u,  DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u });
 	ied.push_back({ "TexCoord", 0u,  DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u });
 
-	inputLayout = std::make_shared<Direct3D11InputLayout>(pd3dRenderer, ied, vertexShader.get()->GetBlob());
+	inputLayout = std::make_shared<Direct3D11InputLayout>(d3dRenderer, ied, vertexShader.get()->GetBlob());
 
-	pixelShader = std::make_shared<Direct3D11PixelShader>(pd3dRenderer, "x64\\Debug\\PixelShaderTest.cso");
+	pixelShader = d3dRenderer.GetResourceMap().GetD3D11PixelShader(d3dRenderer, "x64\\Debug\\PixelShaderTest.cso");
 
 
 	Material::MATERIAL_DESC materialDesc = {};
@@ -194,7 +196,7 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& pd3dRenderer, aiMesh&
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(materialDesc);
 
-	return std::make_shared<Mesh>(pd3dRenderer, meshData, material);
+	return std::make_shared<Mesh>(d3dRenderer, meshData, material);
 }
 
 std::unique_ptr<Node> Model::ParseNode(const aiNode& node)
