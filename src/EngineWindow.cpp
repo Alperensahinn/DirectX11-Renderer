@@ -1,7 +1,7 @@
 #include "EngineWindow.h"
 
-int engine::window::windowWidth = 1024;
-int engine::window::windowHeight = 1024;
+int engine::window::windowWidth = 1600;
+int engine::window::windowHeight = 900;
 
 std::wstring engine::window::GetErrorDescription(HRESULT hr)
 {

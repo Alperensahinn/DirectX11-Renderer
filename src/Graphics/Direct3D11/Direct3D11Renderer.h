@@ -22,6 +22,7 @@ public:
 
 	void ShadowPass(unsigned int indexCount);
 	void LambertianPass(unsigned int indexCount);
+	void EndLambertianPass();
 
 	void StartFrame();
 	void EndFrame();

@@ -2,27 +2,27 @@
 
 std::shared_ptr<Direct3D11VertexShader> Direct3D11ResourceMap::GetD3D11VertexShader(Direct3D11Renderer& d3dRenderer, std::string path)
 {
-    if (d3d11VertesShaderMap.empty() == true)
+    if (d3d11VertexShaderMap.empty() == true)
     {
         std::shared_ptr<Direct3D11VertexShader> vs = std::make_shared<Direct3D11VertexShader>(d3dRenderer, path);
 
-        d3d11VertesShaderMap.insert(std::make_pair(path, vs));
+        d3d11VertexShaderMap.insert(std::make_pair(path, vs));
 
-        return d3d11VertesShaderMap.at(path);
+        return d3d11VertexShaderMap.at(path);
     }
 
-    if(d3d11VertesShaderMap.contains(path))
+    if(d3d11VertexShaderMap.contains(path))
     {
-        return d3d11VertesShaderMap.at(path);
+        return d3d11VertexShaderMap.at(path);
     }
 
     else
     {
         std::shared_ptr<Direct3D11VertexShader> vs = std::make_shared<Direct3D11VertexShader>(d3dRenderer, path);
 
-        d3d11VertesShaderMap.insert(std::make_pair(path, vs));
+        d3d11VertexShaderMap.insert(std::make_pair(path, vs));
 
-        return d3d11VertesShaderMap.at(path);
+        return d3d11VertexShaderMap.at(path);
     }
 }
 
@@ -37,7 +37,7 @@ std::shared_ptr<Direct3D11PixelShader> Direct3D11ResourceMap::GetD3D11PixelShade
         return d3d11PixelShaderMap.at(path);
     }
 
-    if (d3d11VertesShaderMap.contains(path))
+    if (d3d11PixelShaderMap.contains(path))
     {
         return d3d11PixelShaderMap.at(path);
     }

@@ -9,6 +9,14 @@ ShadowMapPass::ShadowMapPass(Direct3D11Renderer& d3dRenderer)
 
 void ShadowMapPass::AddToPass(std::shared_ptr<Model> model)
 {
+	for (int i = 0; i < renderQueue.size(); i++)
+	{
+		if(renderQueue[i] == model)
+		{
+			return;
+		}
+	}
+
 	renderQueue.push_back(model);
 }
 
@@ -26,7 +34,11 @@ void ShadowMapPass::Execute(Direct3D11Renderer& d3dRenderer)
 void ShadowMapPass::SetResources(Direct3D11Renderer& d3dRenderer)
 {
 	pVertexShader.get()->Bind(d3dRenderer);
-	pPixelShader.get()->Bind(d3dRenderer);
+	//pPixelShader.get()->Bind(d3dRenderer);
+
+	//ID3D11PixelShader* nullPS = NULL;
+
+	d3dRenderer.GetImmediateContext()->PSSetShader(NULL, NULL, 0u);
 }
 
 

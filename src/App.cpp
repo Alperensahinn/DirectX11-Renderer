@@ -12,9 +12,9 @@ namespace engine::app
 
 		light = std::make_unique<Light>(pEngineWindow.get()->GetD3D11Renderer());
 
-		//model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\Sponza\\sponza.obj", "Resources\\Sponza\\");
+		model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\Sponza\\sponza.obj", "Resources\\Sponza\\");
 		//model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\3DModels\\Cube.obj", "Resources\\3DModels\\");
-		model_a = std::make_shared<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\3DModels\\ShadowTestObject.obj", "Resources\\3DModels\\");
+		//model_a = std::make_shared<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\3DModels\\ShadowTestObject.obj", "Resources\\3DModels\\");
 	}
 
 	void App::Run()
@@ -38,7 +38,11 @@ namespace engine::app
 
 			pEngineWindow.get()->GetD3D11Renderer().drawMode = 1;
 
+			pEngineWindow.get()->GetD3D11Renderer().LambertianPass(1u);
+
 			model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+
+			pEngineWindow.get()->GetD3D11Renderer().EndLambertianPass();
 
 			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
 		}

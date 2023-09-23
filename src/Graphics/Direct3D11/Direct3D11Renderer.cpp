@@ -94,8 +94,8 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 	//shadow depth buffer
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pShadowDepthTexture;
 	D3D11_TEXTURE2D_DESC shadowTextureDesc = {};
-	shadowTextureDesc.Width = engine::window::windowWidth;
-	shadowTextureDesc.Height = engine::window::windowHeight;
+	shadowTextureDesc.Width = 4096u;
+	shadowTextureDesc.Height = 4096u;
 	shadowTextureDesc.MipLevels = 1u;
 	shadowTextureDesc.ArraySize = 1u;
 	shadowTextureDesc.Format = DXGI_FORMAT_R32_TYPELESS;
@@ -120,7 +120,7 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 
 	pd3dDevice->CreateShaderResourceView(pShadowDepthTexture.Get(), &shadowViewDesc, pShadowTextureView.GetAddressOf()) >> chk;
 
-	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pShadowDepthView.Get()));
+	//CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pShadowDepthView.Get()));
 
 
 	// Setup the viewport
@@ -170,42 +170,65 @@ void Direct3D11Renderer::Draw(unsigned int indexCount)
 	
 	else if (drawMode == 1)
 	{
-		LambertianPass(indexCount);
+		//LambertianPass(indexCount);
+		CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
 	}
 }
 
 void Direct3D11Renderer::ShadowPass(unsigned int indexCount)
 {
-	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
+	D3D11_VIEWPORT vp;
+	vp.Width = 4096;
+	vp.Height = 4096;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
 
+	CHECK_INFOQUEUE(pImmediateContext->RSSetViewports(1, &vp));
 
+	ID3D11RenderTargetView* nullRTV = NULL;
 
-
-
-	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pShadowDepthView.Get()));
+	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, &nullRTV, pShadowDepthView.Get()));
 	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pShadowDepthView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 }
 
 void Direct3D11Renderer::LambertianPass(unsigned int indexCount)
 {
+	D3D11_VIEWPORT vp;
+	vp.Width = engine::window::windowWidth;
+	vp.Height = engine::window::windowHeight;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+
+	CHECK_INFOQUEUE(pImmediateContext->RSSetViewports(1, &vp));
+
 	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
 
 	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get()));
 	CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
 	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 
-	std::shared_ptr<Direct3D11VertexShader> pVertexShader = pResourceMap->GetD3D11VertexShader(*this, "x64\\Debug\\VertexShaderTest.cso");
-	std::shared_ptr<Direct3D11PixelShader> pPixelShader = pResourceMap->GetD3D11PixelShader(*this, "x64\\Debug\\PixelShaderTest.cso");
+	//std::shared_ptr<Direct3D11VertexShader> pVertexShader = pResourceMap->GetD3D11VertexShader(*this, "x64\\Debug\\VertexShaderTest.cso");
+	//std::shared_ptr<Direct3D11PixelShader> pPixelShader = pResourceMap->GetD3D11PixelShader(*this, "x64\\Debug\\PixelShaderTest.cso");
 
-	pVertexShader.get()->Bind(*this);
-	pPixelShader.get()->Bind(*this);
+	//pVertexShader.get()->Bind(*this);
+	//pPixelShader.get()->Bind(*this);
 
 	CHECK_INFOQUEUE(pImmediateContext->PSSetShaderResources(0u, 1u, pShadowTextureView.GetAddressOf()));
 
-	CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
+	//CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pSRV = NULL;
-	pImmediateContext->PSSetShaderResources(0, 1, pSRV.GetAddressOf());
+	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pSRV = NULL;
+	//pImmediateContext->PSSetShaderResources(0, 1, pSRV.GetAddressOf());
+}
+
+void Direct3D11Renderer::EndLambertianPass()
+{
+	ID3D11ShaderResourceView* pSRV = NULL;
+	pImmediateContext->PSSetShaderResources(0, 1, &pSRV);
 }
 
 void Direct3D11Renderer::StartFrame()
