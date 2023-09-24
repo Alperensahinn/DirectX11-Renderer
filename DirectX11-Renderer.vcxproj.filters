@@ -99,6 +99,15 @@
     <ClCompile Include="src\Graphics\Model.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Direct3D11\Direct3D11ResourceMap.cpp">
+      <Filter>Source Files\Graphics\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\ShadowMapPass.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\ForwardPass.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Direct3D11\DxgiInfoManager.h">
@@ -170,12 +179,30 @@
     <ClInclude Include="src\Graphics\Model.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\Graphics\RenderPass.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Direct3D11\Direct3D11ResourceMap.h">
+      <Filter>Header Files\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\ShadowMapPass.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\ForwardPass.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Shaders\VertexShaderTest.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="src\Shaders\PixelShaderTest.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Shaders\VS_Shadow.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Shaders\PS_Shadow.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

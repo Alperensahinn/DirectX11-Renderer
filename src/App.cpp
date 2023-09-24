@@ -1,7 +1,13 @@
 #include "App.h"
+#include "Graphics\ShadowMapPass.h"
+#include "Graphics\ForwardPass.h"
+
+#include <sstream>
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
+float counter = 0.0f;
+int nubmerOfFrames = 0;
 
 namespace engine::app
 {
@@ -11,15 +17,14 @@ namespace engine::app
 
 		light = std::make_unique<Light>(pEngineWindow.get()->GetD3D11Renderer());
 
-
-		model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\Sponza\\sponza.obj", "Resources\\Sponza\\");
+		//model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\Sponza\\sponza.obj", "Resources\\Sponza\\");
+		model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\BrickCube\\BrickCube.obj", "Resources\\BrickCube\\");
 		//model_a = std::make_unique<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\3DModels\\Cube.obj", "Resources\\3DModels\\");
+		//model_a = std::make_shared<Model>(pEngineWindow.get()->GetD3D11Renderer(), "Resources\\3DModels\\ShadowTestObject.obj", "Resources\\3DModels\\");
 	}
 
 	void App::Run()
 	{
-		float rotateAround = 0.0f;
-
 		while (!glfwWindowShouldClose(&pEngineWindow.get()->GetGLFWWindow()))
 		{
 			float currentFrame = glfwGetTime();
@@ -30,19 +35,39 @@ namespace engine::app
 
 			pEngineWindow.get()->GetD3D11Renderer().GetCamera()->Update(&pEngineWindow.get()->GetGLFWWindow(), deltaTime);
 
-
-			rotateAround += 0.5f;
-
-			if (rotateAround > 360.f) rotateAround = 0.0f;
-			
-			//draw calls
-			pEngineWindow.get()->GetD3D11Renderer().StartFrame();
-
 			light.get()->Bind(pEngineWindow.get()->GetD3D11Renderer());
 
-			model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+			//shadow pass
+			pEngineWindow.get()->GetD3D11Renderer().GetShadowMapPass().AddToPass(model_a);
+			pEngineWindow.get()->GetD3D11Renderer().GetShadowMapPass().Execute(pEngineWindow.get()->GetD3D11Renderer());
+
+			//forward pass
+			pEngineWindow.get()->GetD3D11Renderer().GetForwardPass().AddToPass(model_a);
+			pEngineWindow.get()->GetD3D11Renderer().GetForwardPass().Execute(pEngineWindow.get()->GetD3D11Renderer());
 
 			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
+
+			CalculateFPS();
+		}
+	}
+
+	void App::CalculateFPS()
+	{
+		counter = counter + deltaTime;
+
+		nubmerOfFrames++;
+
+		if(counter >= 1.0f)
+		{
+			int fps = nubmerOfFrames;
+
+			std::stringstream ss;
+			ss << "Renderer (Direct3D_11)" << " FPS: " << fps << "(" << deltaTime * 1000.0f << "ms)";
+
+			glfwSetWindowTitle(&pEngineWindow.get()->GetGLFWWindow(), ss.str().c_str());
+
+			nubmerOfFrames = 0;
+			counter = 0;
 		}
 	}
 }

@@ -15,11 +15,12 @@ namespace engine::app
 		App();
 
 		void Run();
+		void CalculateFPS();
 	private:
 		std::unique_ptr<engine::window::EngineWindow> pEngineWindow;
 
 		std::unique_ptr<Light> light;
 
-		std::unique_ptr<Model> model_a;
+		std::shared_ptr<Model> model_a;
 	};
 }
