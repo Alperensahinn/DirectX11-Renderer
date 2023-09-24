@@ -23,9 +23,7 @@ public:
 
 	void ShadowPass();
 	void LambertianPass();
-	void EndLambertianPass();
 
-	void StartFrame();
 	void EndFrame();
 
 	Direct3D11ResourceMap& GetResourceMap();

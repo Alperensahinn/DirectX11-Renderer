@@ -34,23 +34,15 @@ namespace engine::app
 
 			pEngineWindow.get()->GetD3D11Renderer().GetCamera()->Update(&pEngineWindow.get()->GetGLFWWindow(), deltaTime);
 
-			pEngineWindow.get()->GetD3D11Renderer().StartFrame();
-
 			light.get()->Bind(pEngineWindow.get()->GetD3D11Renderer());
 
+			//shadow pass
 			pEngineWindow.get()->GetD3D11Renderer().GetShadowMapPass().AddToPass(model_a);
 			pEngineWindow.get()->GetD3D11Renderer().GetShadowMapPass().Execute(pEngineWindow.get()->GetD3D11Renderer());
 
+			//forward pass
 			pEngineWindow.get()->GetD3D11Renderer().GetForwardPass().AddToPass(model_a);
 			pEngineWindow.get()->GetD3D11Renderer().GetForwardPass().Execute(pEngineWindow.get()->GetD3D11Renderer());
-
-			//pEngineWindow.get()->GetD3D11Renderer().drawMode = 1;
-			//
-			//pEngineWindow.get()->GetD3D11Renderer().LambertianPass();
-			//
-			//model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
-
-			//pEngineWindow.get()->GetD3D11Renderer().EndLambertianPass();
 
 			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
 

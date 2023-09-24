@@ -207,29 +207,13 @@ void Direct3D11Renderer::LambertianPass()
 
 	CHECK_INFOQUEUE(pImmediateContext->RSSetViewports(1, &vp));
 
-	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
+	const float color[] = { 0.75f,0.85f,1.0f,1.0f };
 
 	CHECK_INFOQUEUE(pImmediateContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get()));
 	CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
 	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 
 	CHECK_INFOQUEUE(pImmediateContext->PSSetShaderResources(0u, 1u, pShadowTextureView.GetAddressOf()));
-}
-
-void Direct3D11Renderer::EndLambertianPass()
-{
-	ID3D11ShaderResourceView* pSRV = NULL;
-	pImmediateContext->PSSetShaderResources(0, 1, &pSRV);
-}
-
-void Direct3D11Renderer::StartFrame()
-{
-	const float color[] = { 0.0f,0.0f,0.0f,0.0f };
-	//CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
-	//CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0));
-
-	//CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
-	//CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pShadowDepthView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 }
 
 void Direct3D11Renderer::EndFrame()
