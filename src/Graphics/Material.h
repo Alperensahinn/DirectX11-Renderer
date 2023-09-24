@@ -18,6 +18,7 @@ public:
 		std::shared_ptr<Direct3D11InputLayout> InputLayout;
 
 		std::shared_ptr<Direct3D11Texture2D>	AlbedoTexture;
+		std::shared_ptr<Direct3D11Texture2D>	NormalTexture;
 	};
 
 public:
@@ -26,6 +27,7 @@ public:
 	void Bind(Direct3D11Renderer& d3dRenderer);
 private:
 	std::shared_ptr<Direct3D11Texture2D> pAlbedoTexture;
+	std::shared_ptr<Direct3D11Texture2D> pNormalTexture;
 
 
 	std::shared_ptr<Direct3D11VertexShader> pVertexShader;

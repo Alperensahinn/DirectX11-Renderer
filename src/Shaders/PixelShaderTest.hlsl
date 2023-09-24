@@ -7,6 +7,7 @@ cbuffer lightBuffer : register(b1)
 
 Texture2D shadowMap : register(t0);
 Texture2D diffuseTex : register(t1);
+Texture2D normalTex : register(t2);
 
 SamplerState smplr;
 
@@ -37,13 +38,15 @@ float ShadowCalculation(float4 fragPosLightSpace, float3 normal, float3 lightDir
     return shadow;
 }
 
-float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, float4 fragPosLightSpace : FragmentPositionLightSpace, float3 fragmentNormal : Normal, float2 texCoord : TexCoord) : SV_TARGET
+float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, float4 fragPosLightSpace : FragmentPositionLightSpace, float3x3 tbn : TBN, float2 texCoord : TexCoord) : SV_TARGET
 {
+    //sample normal
+    float3 normal = normalTex.Sample(smplr, texCoord).rgb;
+    normal = normalize(normal * 2.0 - 1.0);
+    normal = normalize(mul(normal, tbn));
+    
     //sample texture
     float4 textureColor = diffuseTex.Sample(smplr, texCoord);
-    
-    //normal
-    float3 normal = normalize(fragmentNormal);
     
     //calculate light direction
     float3 lightDir = normalize(-lightDirection.xyz);
@@ -62,7 +65,7 @@ float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, fl
     float3 specular = specularStrength * spec * lightColor;
     
     //ambient light
-    float ambientStrength = 0.3f;
+    float ambientStrength = 0.25f;
     float3 ambient = ambientStrength * lightColor;
     
     // calculate shadow
@@ -77,5 +80,6 @@ float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, fl
     }
     
     return float4(lighting, 1.0f) * textureColor;
+    //return float4(norm);
 
 }

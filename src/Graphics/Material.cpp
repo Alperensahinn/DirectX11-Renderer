@@ -3,6 +3,7 @@
 Material::Material(MATERIAL_DESC& materialDescription)
 {
 	pAlbedoTexture = materialDescription.AlbedoTexture;
+	pNormalTexture = materialDescription.NormalTexture;
 
 	pVertexShader = materialDescription.VertexShader;
 	pPixelShader = materialDescription.PixelShader;
@@ -13,6 +14,7 @@ Material::Material(MATERIAL_DESC& materialDescription)
 void Material::Bind(Direct3D11Renderer& d3dRenderer)
 {
 	pAlbedoTexture.get()->Bind(d3dRenderer);
+	pNormalTexture.get()->Bind(d3dRenderer);
 
 	pVertexShader.get()->Bind(d3dRenderer);
 	pPixelShader.get()->Bind(d3dRenderer);

@@ -22,7 +22,7 @@ struct VSOut
     float4 pos : SV_POSITION;
 };
 
-VSOut main(float3 pos : Position, float3 normal : Normal, float2 texCoord : TexCoord)
+VSOut main(float3 pos : Position, float3 normal : Normal, float3 aTangent : Tangent, float3 aBitangent : Bitangent, float2 texCoord : TexCoord)
 {  
     VSOut vso;
     
