@@ -155,6 +155,7 @@
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11SamplerState.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11Texture2D.cpp" />
     <ClCompile Include="src\Graphics\Direct3D11\Direct3D11VertexShader.cpp" />
+    <ClCompile Include="src\Graphics\ForwardPass.cpp" />
     <ClCompile Include="src\Graphics\Light.cpp" />
     <ClCompile Include="src\Graphics\Material.cpp" />
     <ClCompile Include="src\Graphics\MaterialFactory.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11Texture2D.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexBuffer.h" />
     <ClInclude Include="src\Graphics\Direct3D11\Direct3D11VertexShader.h" />
+    <ClInclude Include="src\Graphics\ForwardPass.h" />
     <ClInclude Include="src\Graphics\Light.h" />
     <ClInclude Include="src\Graphics\Material.h" />
     <ClInclude Include="src\Graphics\MaterialFactory.h" />

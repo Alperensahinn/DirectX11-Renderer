@@ -9,6 +9,7 @@
 
 class Direct3D11ResourceMap;
 class ShadowMapPass;
+class ForwardPass;
 
 class Direct3D11Renderer
 {
@@ -20,8 +21,8 @@ public:
 	ID3D11DeviceContext* GetImmediateContext();
 	void Draw(unsigned int indexCount);
 
-	void ShadowPass(unsigned int indexCount);
-	void LambertianPass(unsigned int indexCount);
+	void ShadowPass();
+	void LambertianPass();
 	void EndLambertianPass();
 
 	void StartFrame();
@@ -29,6 +30,7 @@ public:
 
 	Direct3D11ResourceMap& GetResourceMap();
 	ShadowMapPass& GetShadowMapPass();
+	ForwardPass& GetForwardPass();
 
 	std::unique_ptr<Camera>& GetCamera();
 
@@ -45,6 +47,7 @@ private:
 
 	Direct3D11ResourceMap* pResourceMap;
 	ShadowMapPass* pShadowMapPass;
+	ForwardPass* pForwardPass;
 private:
 	DxgiInfoManager infoManager;
 	std::unique_ptr<Camera> camera;

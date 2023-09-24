@@ -14,6 +14,7 @@
 
 #include "Direct3D11ResourceMap.h"
 #include "..\ShadowMapPass.h"
+#include "..\ForwardPass.h"
 
 #include "..\Model.h"
 
@@ -138,6 +139,7 @@ Direct3D11Renderer::Direct3D11Renderer(HWND hWnd)
 
 	pResourceMap = new Direct3D11ResourceMap();
 	pShadowMapPass = new ShadowMapPass(*this);
+	pForwardPass = new ForwardPass();
 
 	//camera test
 	camera = std::make_unique<Camera>(0.0f, 5.0f, -5.0f);
@@ -148,6 +150,7 @@ Direct3D11Renderer::~Direct3D11Renderer()
 {
 	delete pResourceMap;
 	delete pShadowMapPass;
+	delete pForwardPass;
 }
 
 ID3D11Device* Direct3D11Renderer::GetDevice()
@@ -170,12 +173,11 @@ void Direct3D11Renderer::Draw(unsigned int indexCount)
 	
 	else if (drawMode == 1)
 	{
-		//LambertianPass(indexCount);
 		CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
 	}
 }
 
-void Direct3D11Renderer::ShadowPass(unsigned int indexCount)
+void Direct3D11Renderer::ShadowPass()
 {
 	D3D11_VIEWPORT vp;
 	vp.Width = 4096;
@@ -193,7 +195,7 @@ void Direct3D11Renderer::ShadowPass(unsigned int indexCount)
 	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pShadowDepthView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 }
 
-void Direct3D11Renderer::LambertianPass(unsigned int indexCount)
+void Direct3D11Renderer::LambertianPass()
 {
 	D3D11_VIEWPORT vp;
 	vp.Width = engine::window::windowWidth;
@@ -211,18 +213,7 @@ void Direct3D11Renderer::LambertianPass(unsigned int indexCount)
 	CHECK_INFOQUEUE(pImmediateContext->ClearRenderTargetView(pRenderTargetView.Get(), color));
 	CHECK_INFOQUEUE(pImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0));
 
-	//std::shared_ptr<Direct3D11VertexShader> pVertexShader = pResourceMap->GetD3D11VertexShader(*this, "x64\\Debug\\VertexShaderTest.cso");
-	//std::shared_ptr<Direct3D11PixelShader> pPixelShader = pResourceMap->GetD3D11PixelShader(*this, "x64\\Debug\\PixelShaderTest.cso");
-
-	//pVertexShader.get()->Bind(*this);
-	//pPixelShader.get()->Bind(*this);
-
 	CHECK_INFOQUEUE(pImmediateContext->PSSetShaderResources(0u, 1u, pShadowTextureView.GetAddressOf()));
-
-	//CHECK_INFOQUEUE(pImmediateContext->DrawIndexed(indexCount, 0u, 0u));
-
-	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pSRV = NULL;
-	//pImmediateContext->PSSetShaderResources(0, 1, pSRV.GetAddressOf());
 }
 
 void Direct3D11Renderer::EndLambertianPass()
@@ -255,6 +246,11 @@ Direct3D11ResourceMap& Direct3D11Renderer::GetResourceMap()
 ShadowMapPass& Direct3D11Renderer::GetShadowMapPass()
 {
 	return *pShadowMapPass;
+}
+
+ForwardPass& Direct3D11Renderer::GetForwardPass()
+{
+	return *pForwardPass;
 }
 
 std::unique_ptr<Camera>& Direct3D11Renderer::GetCamera()

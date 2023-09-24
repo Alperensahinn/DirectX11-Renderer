@@ -105,6 +105,9 @@
     <ClCompile Include="src\Graphics\ShadowMapPass.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\ForwardPass.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Direct3D11\DxgiInfoManager.h">
@@ -183,6 +186,9 @@
       <Filter>Header Files\Graphics\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\ShadowMapPass.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\ForwardPass.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,6 +15,7 @@ namespace engine::app
 		App();
 
 		void Run();
+		void CalculateFPS();
 	private:
 		std::unique_ptr<engine::window::EngineWindow> pEngineWindow;
 

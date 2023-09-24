@@ -1,8 +1,13 @@
 #include "App.h"
 #include "Graphics\ShadowMapPass.h"
+#include "Graphics\ForwardPass.h"
+
+#include <sstream>
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
+float counter = 0.0f;
+int nubmerOfFrames = 0;
 
 namespace engine::app
 {
@@ -36,15 +41,40 @@ namespace engine::app
 			pEngineWindow.get()->GetD3D11Renderer().GetShadowMapPass().AddToPass(model_a);
 			pEngineWindow.get()->GetD3D11Renderer().GetShadowMapPass().Execute(pEngineWindow.get()->GetD3D11Renderer());
 
-			pEngineWindow.get()->GetD3D11Renderer().drawMode = 1;
+			pEngineWindow.get()->GetD3D11Renderer().GetForwardPass().AddToPass(model_a);
+			pEngineWindow.get()->GetD3D11Renderer().GetForwardPass().Execute(pEngineWindow.get()->GetD3D11Renderer());
 
-			pEngineWindow.get()->GetD3D11Renderer().LambertianPass(1u);
+			//pEngineWindow.get()->GetD3D11Renderer().drawMode = 1;
+			//
+			//pEngineWindow.get()->GetD3D11Renderer().LambertianPass();
+			//
+			//model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
-			model_a.get()->Draw(pEngineWindow.get()->GetD3D11Renderer(), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
-
-			pEngineWindow.get()->GetD3D11Renderer().EndLambertianPass();
+			//pEngineWindow.get()->GetD3D11Renderer().EndLambertianPass();
 
 			pEngineWindow.get()->GetD3D11Renderer().EndFrame();
+
+			CalculateFPS();
+		}
+	}
+
+	void App::CalculateFPS()
+	{
+		counter = counter + deltaTime;
+
+		nubmerOfFrames++;
+
+		if(counter >= 1.0f)
+		{
+			int fps = nubmerOfFrames;
+
+			std::stringstream ss;
+			ss << "Renderer (Direct3D_11)" << " FPS: " << fps << "(" << deltaTime * 1000.0f << "ms)";
+
+			glfwSetWindowTitle(&pEngineWindow.get()->GetGLFWWindow(), ss.str().c_str());
+
+			nubmerOfFrames = 0;
+			counter = 0;
 		}
 	}
 }
