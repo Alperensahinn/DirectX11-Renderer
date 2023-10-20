@@ -1,7 +1,7 @@
 # DirectX11-Renderer
 Basic Scene Renderer using DirectX 11.\
-This renderer was developed as part of my computer graphics and DirectX 11 learning process.\
-
+This renderer was developed as part of my computer graphics and DirectX 11 learning process.
+\
 Renderer includes:\
 -Blinn–Phong Shading\
 -Model Loading\
