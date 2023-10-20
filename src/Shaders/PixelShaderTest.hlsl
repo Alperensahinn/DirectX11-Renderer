@@ -59,9 +59,9 @@ float4 main(float3 fragPos : FragmentPosition, float3 viewPos : ViewPosition, fl
     float specularStrength = 0.5f;
     float3 viewDir = normalize(viewPos - fragPos);
     
-    float3 r = dot(lightDir, normal) * normal * 2 - lightDir;
+    float3 halfwayDir = normalize(lightDir + viewDir);
     
-    float spec = pow(max(dot(viewDir, r), 0.0f), 32.0f);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0f), 32.0f);
     float3 specular = specularStrength * spec * lightColor;
     
     //ambient light

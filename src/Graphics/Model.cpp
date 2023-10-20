@@ -116,14 +116,10 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& d3dRenderer, aiMesh& 
 			filePath = folderPath + filePath;
 
 			normalTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, filePath, 2u);
-
-			//bindablePtrs.push_back(Texture::Resolve(gfx, filePath, 1u));
 		}
 		else
 		{
-			normalTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, "Resources\\Textures\\Default_Albedo.png", 2u);
-
-			//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Normal.png", 1u));
+			normalTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, "Resources\\Textures\\Default_Normal.png", 2u);
 		}
 
 		/*
@@ -147,7 +143,7 @@ std::shared_ptr<Mesh> Model::ParseMesh(Direct3D11Renderer& d3dRenderer, aiMesh& 
 	else
 	{
 		albedoTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, "Resources\\Textures\\Default_Albedo.png", 1u);
-		normalTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, "Resources\\Textures\\Default_Albedo.png", 2u);
+		normalTexture = std::make_shared<Direct3D11Texture2D>(d3dRenderer, "Resources\\Textures\\Default_Normal.png", 2u);
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Diffuse.png", 0u));
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Normal.png", 1u));
 		//bindablePtrs.push_back(Texture::Resolve(gfx, "resources\\Defaults\\Textures\\Default_Specular.png", 2u));
