@@ -6,8 +6,10 @@
 class Direct3D11Texture2D
 {
 public:
+	Direct3D11Texture2D() = default;
 	Direct3D11Texture2D(Direct3D11Renderer& d3dRenderer, std::string filePath, unsigned int slot);
-
+	
+	bool TryMakeDirect3D11Texture2D(Direct3D11Renderer& d3dRenderer, std::string filePath, unsigned int slot);
 	void Bind(Direct3D11Renderer& d3dRenderer);
 private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pTexture2DResourceView;
