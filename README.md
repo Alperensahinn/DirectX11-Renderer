@@ -1,16 +1,16 @@
 # DirectX11-Renderer
-Basic Scene Renderer using DirectX 11.<br />
-This renderer was developed as part of my computer graphics and DirectX 11 learning process.<br />
+Basic Scene Renderer using DirectX 11.\
+This renderer was developed as part of my computer graphics and DirectX 11 learning process.\
 
-Renderer includes:<br />
--Blinn–Phong Shading<br />
--Model Loading<br />
--Texture Loading<br />
--Basic Render Queue System<br />
-
-Things to be added:<br />
--PBR<br />
--More Advanced Render Queue System<br />
+Renderer includes:\
+-Blinn–Phong Shading\
+-Model Loading\
+-Texture Loading\
+-Basic Render Queue System\
+\
+Things to be added:\
+-PBR\
+-More Advanced Render Queue System\
 
 ![ScreenShoot_01](https://github.com/Alperensahinn/DirectX11-Renderer/assets/91412232/5da0efe5-3218-4e99-b0b8-f329b54faee5)
 
