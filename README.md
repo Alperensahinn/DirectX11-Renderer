@@ -11,7 +11,7 @@ Renderer includes:\
 \
 Things to be added:\
 -PBR\
--More Advanced Render Queue System\
+-More Advanced Render Queue System
 
 ![ScreenShoot_01](https://github.com/Alperensahinn/DirectX11-Renderer/assets/91412232/5da0efe5-3218-4e99-b0b8-f329b54faee5)
 
